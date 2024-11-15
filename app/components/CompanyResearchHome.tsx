@@ -2,21 +2,21 @@
 
 import { useState, FormEvent } from "react";
 
-export default function FactChecker() {
+export default function CompanyResearcher() {
   const [isGenerating, setIsGenerating] = useState(false);
-  const [factCheckResult, setFactCheckResult] = useState('');
-  const [articleContent, setArticleContent] = useState('');
+  const [researchResult, setResearchResult] = useState('');
+  const [companyUrl, setCompanyUrl] = useState('');
   const [error, setError] = useState<string | null>(null);
 
-  const handleSearch = async (e: FormEvent) => {
+  const handleResearch = async (e: FormEvent) => {
     e.preventDefault(); // Prevent form submission refresh
-    console.log("Fact-checking initiated for article content.");
+    console.log("Research initiated for company URL.");
 
-    if (!articleContent) {
-      setError("Please enter some content for fact-checking.");
+    if (!companyUrl) {
+      setError("Please enter a company URL for research.");
       return;
     }
-
+    
     setIsGenerating(true);
     setError(null);
 
@@ -27,28 +27,28 @@ export default function FactChecker() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ content: articleContent }),
+        body: JSON.stringify({ url: companyUrl }),
       });
 
       console.log("API response status:", response.status);
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to fetch fact-check result.');
+        throw new Error(errorData.error || 'Failed to fetch research result.');
       }
 
       const data = await response.json();
       console.log("Received data:", data);
 
-      if (data.factCheckResult) {
-        setFactCheckResult(data.factCheckResult);
+      if (data.researchResult) {
+        setResearchResult(data.researchResult);
       } else {
-        setError("No fact-checking information found.");
+        setError("No research information found.");
       }
     } catch (error) {
-      console.error('Error in handleSearch:', error);
+      console.error('Error in handleResearch:', error);
       setError(error instanceof Error ? error.message : 'An unexpected error occurred.');
-      setFactCheckResult('');
+      setResearchResult('');
     } finally {
       setIsGenerating(false);
     }
@@ -57,21 +57,20 @@ export default function FactChecker() {
   return (
     <div className="w-full border-6 max-w-4xl p-6">
       <h1 className="md:text-6xl text-4xl pb-5 font-medium opacity-0 animate-fade-up [animation-delay:200ms]">
-        Fact Check Your
-        <span className="text-brand-default"> Blogs & Articles </span>
-        Instantly
+        <span className="text-brand-default"> Company </span>
+        Researcher
       </h1>
 
       <p className="text-black mb-12 opacity-0 animate-fade-up [animation-delay:400ms]">
-        We verify all your facts with real sources, so you can publish your blogs and articles with confidence.
+        Enter a company URL for detailed research info. Instantly know any company inside out.
       </p>
 
-      <form onSubmit={handleSearch} className="space-y-6">
-        <textarea
-          value={articleContent}
-          onChange={(e) => setArticleContent(e.target.value)}
-          placeholder="Enter Your Blog or Article Content"
-          className="w-full bg-white p-3 border box-border outline-none rounded-sm ring-2 ring-brand-default resize-none min-h-[150px] overflow-auto opacity-0 animate-fade-up [animation-delay:600ms]"
+      <form onSubmit={handleResearch} className="space-y-6">
+        <input
+          value={companyUrl}
+          onChange={(e) => setCompanyUrl(e.target.value)}
+          placeholder="Enter Company URL"
+          className="w-full bg-white p-3 border box-border outline-none rounded-sm ring-2 ring-brand-default resize-none opacity-0 animate-fade-up [animation-delay:600ms]"
         />
         <button
           type="submit"
@@ -80,7 +79,7 @@ export default function FactChecker() {
           }`}
           disabled={isGenerating}
         >
-          {isGenerating ? 'Fact Checking...' : 'Fact Check Now'}
+          {isGenerating ? 'Researching...' : 'Research Now'}
         </button>
       </form>
 
@@ -90,9 +89,9 @@ export default function FactChecker() {
         </div>
       )}
 
-      {factCheckResult && (
+      {researchResult && (
         <div className="mt-20 w-full bg-white p-4 border outline-none resize-none min-h-[200px] overflow-auto rounded opacity-0 animate-fade-up [animation-delay:200ms]">
-          {factCheckResult}
+          {researchResult}
         </div>
       )}
     </div>
