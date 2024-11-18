@@ -87,6 +87,51 @@ export default function CompanyResearcher() {
     }
   };
 
+  // Function to fetch both subpages and main website content in parallel
+  const fetchWebsiteData = async (url: string) => {
+    try {
+      // Prepare both API requests
+      const subpagesFetch = fetch('/api/scrapewebsitesubpages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ websiteurl: url }),
+      });
+
+      const mainPageFetch = fetch('/api/scrapewebsiteurl', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ websiteurl: url }),
+      });
+
+      // Run both requests in parallel
+      const [subpagesResponse, mainPageResponse] = await Promise.all([subpagesFetch, mainPageFetch]);
+
+      // Check if both responses are okay
+      if (!subpagesResponse.ok) {
+        throw new Error('Failed to fetch subpages data');
+      }
+      if (!mainPageResponse.ok) {
+        throw new Error('Failed to fetch main website data');
+      }
+
+      // Parse both responses as JSON
+      const subpagesData = await subpagesResponse.json();
+      const mainPageData = await mainPageResponse.json();
+
+      return {
+        subpagesData: subpagesData.results,
+        mainPageData: mainPageData.results,
+      };
+    } catch (error) {
+      console.error('Error fetching website data:', error);
+      throw error;
+    }
+  };
+
 
   // Main Research Function
   const handleResearch = async (e: FormEvent) => {
@@ -112,6 +157,8 @@ export default function CompanyResearcher() {
       const newsPromise = fetchNews(companyUrl)
         .then((data) => setNews(data))
         .catch((error) => setError(error instanceof Error ? error.message : 'An error occurred with news'));
+
+      console.log(await fetchWebsiteData(companyUrl));
 
       await Promise.allSettled([linkedinPromise, competitorsPromise, newsPromise]);
     } finally {

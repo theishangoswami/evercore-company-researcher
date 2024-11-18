@@ -1,4 +1,4 @@
-// app/api/scrapewebsiteurl/route.ts
+// app/api/scrapewebsitesubpages/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import Exa from "exa-js";
 
