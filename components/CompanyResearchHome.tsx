@@ -2,6 +2,7 @@
 "use client";
 import { useState, FormEvent } from "react";
 import LinkedInDisplay from "./LinkedinDisplay";
+import CompetitorsDisplay from "./CompetitorsDisplay";
 
 
 export default function CompanyResearcher() {
@@ -9,6 +10,33 @@ export default function CompanyResearcher() {
   const [companyUrl, setCompanyUrl] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [linkedinData, setLinkedinData] = useState<any>(null);
+  const [competitors, setCompetitors] = useState<any>([]);
+
+  const fetchCompetitors = async (url: string) => {
+    try {
+      const response = await fetch('/api/findcompetitors', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ websiteurl: url }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch competitors');
+      }
+
+      const data = await response.json();
+      return data.results.map((result: any) => ({
+        title: result.title,
+        url: result.url,
+        summary: result.summary,
+      }));
+    } catch (error) {
+      console.error('Error fetching competitors:', error);
+      throw error;
+    }
+  };
 
   const handleResearch = async (e: FormEvent) => {
     e.preventDefault();
@@ -22,20 +50,25 @@ export default function CompanyResearcher() {
     setError(null);
 
     try {
-      const response = await fetch('/api/scrapelinkedin', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ websiteurl: companyUrl }),
-      });
+      // Run both API calls in parallel
+      const [linkedinResponse, competitorsData] = await Promise.all([
+        fetch('/api/scrapelinkedin', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ websiteurl: companyUrl }),
+        }),
+        fetchCompetitors(companyUrl)
+      ]);
 
-      if (!response.ok) {
-        throw new Error('Research failed');
+      if (!linkedinResponse.ok) {
+        throw new Error('LinkedIn research failed');
       }
 
-      const data = await response.json();
-      setLinkedinData(data.results[0]);
+      const linkedinData = await linkedinResponse.json();
+      setLinkedinData(linkedinData.results[0]);
+      setCompetitors(competitorsData);
     } catch (error) {
       console.error('Error:', error);
       setError(error instanceof Error ? error.message : 'An unexpected error occurred');
@@ -80,6 +113,7 @@ export default function CompanyResearcher() {
       )}
 
       {linkedinData && <LinkedInDisplay data={linkedinData} />}
+      {competitors.length > 0 && <CompetitorsDisplay competitors={competitors} />}
     </div>
   );
 }
