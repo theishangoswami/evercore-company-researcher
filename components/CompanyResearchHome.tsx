@@ -5,6 +5,7 @@ import { useState, FormEvent } from "react";
 import LinkedInDisplay from "./LinkedinDisplay";
 import CompetitorsDisplay from "./CompetitorsDisplay";
 import NewsDisplay from "./NewsDisplay";
+import CompanySummary from "./CompanySummar";
 
 export default function CompanyResearcher() {
   const [isGenerating, setIsGenerating] = useState(false);
@@ -130,12 +131,9 @@ export default function CompanyResearcher() {
         body: JSON.stringify({
           subpages: subpagesData.results,
           mainpage: mainPageData.results,
+          websiteurl: url
         }),
       });
-
-      if (!companySummaryResponse.ok) {
-        throw new Error('Failed to fetch company summary');
-      }
 
       const companySummaryData = await companySummaryResponse.json();
 
@@ -186,7 +184,7 @@ export default function CompanyResearcher() {
   };
 
   return (
-    <div className="w-full max-w-5xl p-6 z-10">
+    <div className="w-full max-w-5xl p-6 z-10 mb-20 mt-6">
       <h1 className="md:text-6xl text-4xl pb-5 font-medium opacity-0 animate-fade-up [animation-delay:200ms]">
         <span className="text-brand-default"> Company </span>
         Researcher
@@ -215,12 +213,14 @@ export default function CompanyResearcher() {
       </form>
 
       {error && (
-        <div className="mt-4 p-3 bg-red-100 border border-red-400 text-red-700">
+        <div className="mt-4 mb-4 p-3 bg-red-100 border border-red-400 text-red-700">
           {error}
         </div>
       )}
 
       {linkedinData && <LinkedInDisplay data={linkedinData} />}
+
+      {companySummary && <CompanySummary summary={companySummary} />}
 
       {competitors.length > 0 && <CompetitorsDisplay competitors={competitors} />}
 

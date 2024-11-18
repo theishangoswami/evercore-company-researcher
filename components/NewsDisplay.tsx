@@ -25,7 +25,7 @@ const NewsDisplay: React.FC<NewsDisplayProps> = ({ news }) => {
   return (
     <div className="mt-24">
 
-    <h2 className="text-2xl font-medium mb-4 ml-1">Latest News</h2>
+    <h2 className="text-2xl font-medium mb-8 ml-1">Latest News</h2>
 
     <div className="w-full overflow-x-auto py-6">
       <motion.div
