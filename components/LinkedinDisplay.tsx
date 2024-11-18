@@ -76,32 +76,42 @@ export default function LinkedInDisplay({ data }: { data: LinkedInData }) {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <InfoItem
-          icon={<Users className="w-5 h-5" />}
-          label="Company Size"
-          value={processedData.companySize}
-        />
-        <InfoItem
-          icon={<MapPin className="w-5 h-5" />}
-          label="Headquarters"
-          value={processedData.headquarters}
-        />
-        <InfoItem
-          icon={<Globe className="w-5 h-5" />}
-          label="Industry"
-          value={processedData.industry}
-        />
-        <InfoItem
-          icon={<Building2 className="w-5 h-5" />}
-          label="Company Type"
-          value={processedData.type}
-        />
-        <InfoItem
-          icon={<LinkIcon className="w-5 h-5" />}
-          label="LinkedIn"
-          value={processedData.linkedinUrl}
-          isLink
-        />
+        {processedData.companySize && (
+            <InfoItem
+            icon={<Users className="w-5 h-5" />}
+            label="Company Size"
+            value={processedData.companySize}
+            />
+        )}
+        {processedData.headquarters && (
+            <InfoItem
+            icon={<MapPin className="w-5 h-5" />}
+            label="Headquarters"
+            value={processedData.headquarters}
+            />
+        )}
+        {processedData.industry && (
+            <InfoItem
+            icon={<Globe className="w-5 h-5" />}
+            label="Industry"
+            value={processedData.industry}
+            />
+        )}
+        {processedData.type && (
+            <InfoItem
+            icon={<Building2 className="w-5 h-5" />}
+            label="Company Type"
+            value={processedData.type}
+            />
+        )}
+        {processedData.linkedinUrl && (
+            <InfoItem
+            icon={<LinkIcon className="w-5 h-5" />}
+            label="LinkedIn"
+            value={processedData.linkedinUrl}
+            isLink
+            />
+        )}
       </div>
 
       {processedData.specialties.length > 0 && (
@@ -138,18 +148,20 @@ const InfoItem = ({
     <div className="text-blue-600 mt-1">{icon}</div>
     <div>
       <h3 className="font-medium text-gray-700">{label}</h3>
-      {isLink && value ? (
+
+      {isLink ? (
         <a
           href={value}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-blue-600 hover:underline"
+          className="text-blue-600 hover:underline break-all"
         >
           {value}
         </a>
       ) : (
-        <p className="text-gray-600">{value || 'N/A'}</p>
+        <p className="text-gray-600 break-words">{value}</p>
       )}
+
     </div>
   </div>
 );
