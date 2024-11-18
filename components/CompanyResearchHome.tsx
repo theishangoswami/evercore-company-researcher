@@ -4,6 +4,7 @@
 import { useState, FormEvent } from "react";
 import LinkedInDisplay from "./LinkedinDisplay";
 import CompetitorsDisplay from "./CompetitorsDisplay";
+import NewsDisplay from "./NewsDisplay";
 
 export default function CompanyResearcher() {
   const [isGenerating, setIsGenerating] = useState(false);
@@ -11,6 +12,7 @@ export default function CompanyResearcher() {
   const [error, setError] = useState<string | null>(null);
   const [linkedinData, setLinkedinData] = useState<any>(null);
   const [competitors, setCompetitors] = useState<any>([]);
+  const [news, setNews] = useState<any[]>([]);
 
   // LinkedIn API fetch function
   const fetchLinkedInData = async (url: string) => {
@@ -62,6 +64,31 @@ export default function CompanyResearcher() {
     }
   };
 
+  // New function to fetch news
+  const fetchNews = async (url: string) => {
+    try {
+      const response = await fetch('/api/findnews', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ websiteurl: url }),
+      });
+
+      if (!response.ok) {
+        throw new Error('News research failed');
+      }
+
+      const data = await response.json();
+      return data.results.filter((item: any) => item.image && item.title).slice(0, 6);
+    } catch (error) {
+      console.error('Error fetching news:', error);
+      throw error;
+    }
+  };
+
+
+  // Main Research Function
   const handleResearch = async (e: FormEvent) => {
     e.preventDefault();
 
@@ -73,7 +100,6 @@ export default function CompanyResearcher() {
     setIsGenerating(true);
     setError(null);
 
-    // Run LinkedIn and competitors API calls independently
     try {
       const linkedinPromise = fetchLinkedInData(companyUrl)
         .then((data) => setLinkedinData(data))
@@ -83,14 +109,18 @@ export default function CompanyResearcher() {
         .then((data) => setCompetitors(data))
         .catch((error) => setError(error instanceof Error ? error.message : 'An error occurred with competitors'));
 
-      await Promise.allSettled([linkedinPromise, competitorsPromise]);
+      const newsPromise = fetchNews(companyUrl)
+        .then((data) => setNews(data))
+        .catch((error) => setError(error instanceof Error ? error.message : 'An error occurred with news'));
+
+      await Promise.allSettled([linkedinPromise, competitorsPromise, newsPromise]);
     } finally {
       setIsGenerating(false);
     }
   };
 
   return (
-    <div className="w-full max-w-4xl p-6 z-10">
+    <div className="w-full max-w-5xl p-6 z-10">
       <h1 className="md:text-6xl text-4xl pb-5 font-medium opacity-0 animate-fade-up [animation-delay:200ms]">
         <span className="text-brand-default"> Company </span>
         Researcher
@@ -125,7 +155,11 @@ export default function CompanyResearcher() {
       )}
 
       {linkedinData && <LinkedInDisplay data={linkedinData} />}
+
       {competitors.length > 0 && <CompetitorsDisplay competitors={competitors} />}
+
+      {news.length > 0 && <NewsDisplay news={news} />}
+
     </div>
   );
 }
