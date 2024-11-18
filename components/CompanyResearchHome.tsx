@@ -22,7 +22,7 @@ export default function CompanyResearcher() {
     setError(null);
 
     try {
-      const response = await fetch('/api/exalinkedin', {
+      const response = await fetch('/api/scrapelinkedin', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -64,9 +64,9 @@ export default function CompanyResearcher() {
         />
         <button
           type="submit"
-          className={`w-full bg-brand-default text-white font-semibold px-2 py-2 rounded-sm transition-opacity opacity-0 animate-fade-up [animation-delay:800ms] min-h-[50px] ring-2 ring-brand-default ${
-            isGenerating ? 'transition-colors disabled:bg-gray-40' : ''
-          }`}
+          className={`w-full text-white font-semibold px-2 py-2 rounded-sm transition-opacity opacity-0 animate-fade-up [animation-delay:800ms] min-h-[50px] ${
+            isGenerating ? 'bg-gray-400' : 'bg-brand-default ring-2 ring-brand-default'
+          } transition-colors`}
           disabled={isGenerating}
         >
           {isGenerating ? 'Researching...' : 'Research Now'}

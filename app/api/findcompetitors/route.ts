@@ -1,4 +1,4 @@
-// app/api/exalinkedin/route.ts
+// app/api/findcompetitors/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import Exa from "exa-js";
 
@@ -12,14 +12,16 @@ export async function POST(req: NextRequest) {
     }
 
     // Use Exa to search for content related to the claim
-    const result = await exa.searchAndContents(
-      `${websiteurl} Linkedin profile:`,
+    const result = await exa.findSimilarAndContents(
+      `${websiteurl}`,
       {
-        type: "keyword",
         text: true,
-        numResults: 1,
+        summary: {
+            query: `Explain me what does this company do in simple english. Don't use any diffcult words.`
+          },
+        numResults: 7,
         livecrawl: "always",
-        category: "linkedin profile"
+        excludeDomains: [`${websiteurl}`]
       }
     );
 
