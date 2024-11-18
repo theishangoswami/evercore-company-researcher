@@ -1,4 +1,4 @@
-import CompanyResearcher from "./components/CompanyResearchHome";
+import CompanyResearcher from "../components/CompanyResearchHome";
 
 export default function Home() {
   return (
