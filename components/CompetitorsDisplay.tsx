@@ -11,6 +11,16 @@ interface CompetitorDisplayProps {
   competitors: Competitor[];
 }
 
+// Function to extract the main part of the domain
+const extractDomain = (url: string) => {
+  try {
+    const domain = new URL(url).hostname.replace('www.', '');
+    return domain;
+  } catch {
+    return url;
+  }
+};
+
 export default function CompetitorsDisplay({ competitors }: CompetitorDisplayProps) {
   if (!competitors?.length) return null;
 
@@ -33,7 +43,7 @@ export default function CompetitorsDisplay({ competitors }: CompetitorDisplayPro
               className="block group"
             >
               <h3 className="text-lg font-medium text-brand-default group-hover:text-brand-default/80 transition-colors mb-2">
-                {competitor.title}
+                {competitor.title || extractDomain(competitor.url)}
               </h3>
               <p className="text-sm text-gray-600 mb-3 line-clamp-3">
                 {competitor.summary}
