@@ -55,7 +55,7 @@ export default function LinkedInDisplay({ data }: { data: LinkedInData }) {
   const processedData = processLinkedInText(data);
 
   return (
-    <div className="bg-white p-6 md:p-8 w-full max-w-4xl mx-auto border shadow-sm">
+    <div className="bg-white p-6 md:p-8 w-full max-w-4xl mx-auto border shadow-sm opacity-0 animate-fade-up">
       <div className="flex flex-col md:flex-row items-start gap-6 mb-8">
         {processedData.logo && (
           <div className="w-20 h-20 md:w-24 md:h-24 relative flex-shrink-0 mx-0">
