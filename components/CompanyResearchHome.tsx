@@ -1,4 +1,5 @@
 // CompanyResearchHome.tsx
+
 "use client";
 import { useState, FormEvent } from "react";
 import LinkedInDisplay from "./LinkedinDisplay";
