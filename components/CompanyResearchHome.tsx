@@ -1,61 +1,51 @@
+// CompanyResearchHome.tsx
 "use client";
-
 import { useState, FormEvent } from "react";
+import LinkedInDisplay from "./LinkedinDisplay";
+
 
 export default function CompanyResearcher() {
   const [isGenerating, setIsGenerating] = useState(false);
-  const [researchResult, setResearchResult] = useState('');
   const [companyUrl, setCompanyUrl] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [linkedinData, setLinkedinData] = useState<any>(null);
 
   const handleResearch = async (e: FormEvent) => {
-    e.preventDefault(); // Prevent form submission refresh
-    console.log("Research initiated for company URL.");
-
+    e.preventDefault();
+    
     if (!companyUrl) {
-      setError("Please enter a company URL for research.");
+      setError("Please enter a company URL");
       return;
     }
-    
+
     setIsGenerating(true);
     setError(null);
 
     try {
-      console.log("Making API request to /api/exa");
-      const response = await fetch('/api/exa', {
+      const response = await fetch('/api/exalinkedin', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ url: companyUrl }),
+        body: JSON.stringify({ websiteurl: companyUrl }),
       });
 
-      console.log("API response status:", response.status);
-
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to fetch research result.');
+        throw new Error('Research failed');
       }
 
       const data = await response.json();
-      console.log("Received data:", data);
-
-      if (data.researchResult) {
-        setResearchResult(data.researchResult);
-      } else {
-        setError("No research information found.");
-      }
+      setLinkedinData(data.results[0]);
     } catch (error) {
-      console.error('Error in handleResearch:', error);
-      setError(error instanceof Error ? error.message : 'An unexpected error occurred.');
-      setResearchResult('');
+      console.error('Error:', error);
+      setError(error instanceof Error ? error.message : 'An unexpected error occurred');
     } finally {
       setIsGenerating(false);
     }
   };
 
   return (
-    <div className="w-full border-6 max-w-4xl p-6">
+    <div className="w-full max-w-4xl p-6 z-10">
       <h1 className="md:text-6xl text-4xl pb-5 font-medium opacity-0 animate-fade-up [animation-delay:200ms]">
         <span className="text-brand-default"> Company </span>
         Researcher
@@ -65,7 +55,7 @@ export default function CompanyResearcher() {
         Enter a company URL for detailed research info. Instantly know any company inside out.
       </p>
 
-      <form onSubmit={handleResearch} className="space-y-6">
+      <form onSubmit={handleResearch} className="space-y-6 mb-20">
         <input
           value={companyUrl}
           onChange={(e) => setCompanyUrl(e.target.value)}
@@ -75,7 +65,7 @@ export default function CompanyResearcher() {
         <button
           type="submit"
           className={`w-full bg-brand-default text-white font-semibold px-2 py-2 rounded-sm transition-opacity opacity-0 animate-fade-up [animation-delay:800ms] min-h-[50px] ring-2 ring-brand-default ${
-            isGenerating ? 'opacity-50 cursor-not-allowed' : ''
+            isGenerating ? 'transition-colors disabled:bg-gray-40' : ''
           }`}
           disabled={isGenerating}
         >
@@ -84,16 +74,12 @@ export default function CompanyResearcher() {
       </form>
 
       {error && (
-        <div className="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+        <div className="mt-4 p-3 bg-red-100 border border-red-400 text-red-700">
           {error}
         </div>
       )}
 
-      {researchResult && (
-        <div className="mt-20 w-full bg-white p-4 border outline-none resize-none min-h-[200px] overflow-auto rounded opacity-0 animate-fade-up [animation-delay:200ms]">
-          {researchResult}
-        </div>
-      )}
+      {linkedinData && <LinkedInDisplay data={linkedinData} />}
     </div>
   );
 }
