@@ -122,6 +122,9 @@ export default function CompanyResearcher() {
       const subpagesData = await subpagesResponse.json();
       const mainPageData = await mainPageResponse.json();
 
+      console.log(subpagesData.results);
+      console.log(mainPageData.results);
+
       // Pass the parsed data to the companysummary API
       const companySummaryResponse = await fetch('/api/companysummary', {
         method: 'POST',

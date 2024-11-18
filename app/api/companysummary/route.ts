@@ -25,9 +25,6 @@ export async function POST(req: NextRequest) {
 
       Here are the content from a company's website so you can understand about the company in detail.
 
-      SUBPAGES CONTENT (includes about, pricing, faq, blog, etc):
-      ${subpagesText}
-
       MAIN WEBSITE CONTENT:
       ${mainpageText}
         

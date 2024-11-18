@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
           text: true,
           numResults: 1,
           livecrawl: "always",
-          subpages: 5,
+          subpages: 4,
           subpageTarget: ["about", "pricing", "faq", "blog"],
           includeDomains: [websiteurl]
         }
