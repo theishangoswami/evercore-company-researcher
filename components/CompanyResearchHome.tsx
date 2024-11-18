@@ -4,7 +4,6 @@ import { useState, FormEvent } from "react";
 import LinkedInDisplay from "./LinkedinDisplay";
 import CompetitorsDisplay from "./CompetitorsDisplay";
 
-
 export default function CompanyResearcher() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [companyUrl, setCompanyUrl] = useState('');
@@ -12,6 +11,30 @@ export default function CompanyResearcher() {
   const [linkedinData, setLinkedinData] = useState<any>(null);
   const [competitors, setCompetitors] = useState<any>([]);
 
+  // LinkedIn API fetch function
+  const fetchLinkedInData = async (url: string) => {
+    try {
+      const response = await fetch('/api/scrapelinkedin', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ websiteurl: url }),
+      });
+
+      if (!response.ok) {
+        throw new Error('LinkedIn research failed');
+      }
+
+      const data = await response.json();
+      return data.results[0];
+    } catch (error) {
+      console.error('Error fetching LinkedIn data:', error);
+      throw error;
+    }
+  };
+
+  // Competitors API fetch function
   const fetchCompetitors = async (url: string) => {
     try {
       const response = await fetch('/api/findcompetitors', {
@@ -40,7 +63,7 @@ export default function CompanyResearcher() {
 
   const handleResearch = async (e: FormEvent) => {
     e.preventDefault();
-    
+
     if (!companyUrl) {
       setError("Please enter a company URL");
       return;
@@ -49,29 +72,17 @@ export default function CompanyResearcher() {
     setIsGenerating(true);
     setError(null);
 
+    // Run LinkedIn and competitors API calls independently
     try {
-      // Run both API calls in parallel
-      const [linkedinResponse, competitorsData] = await Promise.all([
-        fetch('/api/scrapelinkedin', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ websiteurl: companyUrl }),
-        }),
-        fetchCompetitors(companyUrl)
-      ]);
+      const linkedinPromise = fetchLinkedInData(companyUrl)
+        .then((data) => setLinkedinData(data))
+        .catch((error) => setError(error instanceof Error ? error.message : 'An error occurred with LinkedIn'));
 
-      if (!linkedinResponse.ok) {
-        throw new Error('LinkedIn research failed');
-      }
+      const competitorsPromise = fetchCompetitors(companyUrl)
+        .then((data) => setCompetitors(data))
+        .catch((error) => setError(error instanceof Error ? error.message : 'An error occurred with competitors'));
 
-      const linkedinData = await linkedinResponse.json();
-      setLinkedinData(linkedinData.results[0]);
-      setCompetitors(competitorsData);
-    } catch (error) {
-      console.error('Error:', error);
-      setError(error instanceof Error ? error.message : 'An unexpected error occurred');
+      await Promise.allSettled([linkedinPromise, competitorsPromise]);
     } finally {
       setIsGenerating(false);
     }

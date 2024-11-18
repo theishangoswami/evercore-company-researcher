@@ -15,11 +15,11 @@ export default function CompetitorsDisplay({ competitors }: CompetitorDisplayPro
   if (!competitors?.length) return null;
 
   return (
-    <div className="mt-8 space-y-6 opacity-0 animate-fade-up [animation-delay:200ms]">
+    <div className="mt-20 space-y-6 opacity-0 animate-fade-up [animation-delay:200ms]">
       <h2 className="text-2xl font-medium mb-4">
         Similar Companies
       </h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         {competitors.map((competitor, index) => (
           <div
             key={competitor.url}
