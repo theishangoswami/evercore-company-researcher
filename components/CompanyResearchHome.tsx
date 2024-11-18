@@ -13,6 +13,7 @@ export default function CompanyResearcher() {
   const [linkedinData, setLinkedinData] = useState<any>(null);
   const [competitors, setCompetitors] = useState<any>([]);
   const [news, setNews] = useState<any[]>([]);
+  const [companySummary, setCompanySummary] = useState<any>(null);
 
   // LinkedIn API fetch function
   const fetchLinkedInData = async (url: string) => {
@@ -87,10 +88,10 @@ export default function CompanyResearcher() {
     }
   };
 
-  // Function to fetch both subpages and main website content in parallel
+  // Function to fetch subpages, main page data, and then pass both to the companysummary API
   const fetchWebsiteData = async (url: string) => {
     try {
-      // Prepare both API requests
+      // Step 1: Fetch data from subpages and main page in parallel
       const subpagesFetch = fetch('/api/scrapewebsitesubpages', {
         method: 'POST',
         headers: {
@@ -107,10 +108,9 @@ export default function CompanyResearcher() {
         body: JSON.stringify({ websiteurl: url }),
       });
 
-      // Run both requests in parallel
+      // Run both requests in parallel and await their results
       const [subpagesResponse, mainPageResponse] = await Promise.all([subpagesFetch, mainPageFetch]);
 
-      // Check if both responses are okay
       if (!subpagesResponse.ok) {
         throw new Error('Failed to fetch subpages data');
       }
@@ -118,13 +118,30 @@ export default function CompanyResearcher() {
         throw new Error('Failed to fetch main website data');
       }
 
-      // Parse both responses as JSON
       const subpagesData = await subpagesResponse.json();
       const mainPageData = await mainPageResponse.json();
 
+      // Pass the parsed data to the companysummary API
+      const companySummaryResponse = await fetch('/api/companysummary', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          subpages: subpagesData.results,
+          mainpage: mainPageData.results,
+        }),
+      });
+
+      if (!companySummaryResponse.ok) {
+        throw new Error('Failed to fetch company summary');
+      }
+
+      const companySummaryData = await companySummaryResponse.json();
+
+      // Return the final summarized data
       return {
-        subpagesData: subpagesData.results,
-        mainPageData: mainPageData.results,
+        companySummary: companySummaryData.result,
       };
     } catch (error) {
       console.error('Error fetching website data:', error);
@@ -157,10 +174,12 @@ export default function CompanyResearcher() {
       const newsPromise = fetchNews(companyUrl)
         .then((data) => setNews(data))
         .catch((error) => setError(error instanceof Error ? error.message : 'An error occurred with news'));
+        
+      const websiteDataPromise = fetchWebsiteData(companyUrl)
+        .then((data) => setCompanySummary(data.companySummary))
+        .catch((error) => setError(error instanceof Error ? error.message : 'An error occurred with company summary'));
 
-      console.log(await fetchWebsiteData(companyUrl));
-
-      await Promise.allSettled([linkedinPromise, competitorsPromise, newsPromise]);
+      await Promise.allSettled([linkedinPromise, competitorsPromise, newsPromise, websiteDataPromise]);
     } finally {
       setIsGenerating(false);
     }

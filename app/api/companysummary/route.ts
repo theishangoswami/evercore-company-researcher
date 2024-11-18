@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
 
       Headings could be: Product, Target Users, Funding, Pricing, Company's Goal, 3 company strengths, 3 company weakness, and more, whichever are relevant. Don't have to include a specfic heading if it doesn't have enough source about it, and you can also make up your own headings whichever seems apt.
 
-      It should be heading and then text with it.
+      It should be (an emoji with heading) and then text with it.
 
       All the output content should be in simple english. Don't use any diffcult words.
 
