@@ -2,6 +2,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Exa from "exa-js";
 
+export const maxDuration = 60;
+
 const exa = new Exa(process.env.EXA_API_KEY as string);
 
 export async function POST(req: NextRequest) {
