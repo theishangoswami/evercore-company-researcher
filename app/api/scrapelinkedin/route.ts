@@ -21,7 +21,6 @@ export async function POST(req: NextRequest) {
         text: true,
         numResults: 1,
         livecrawl: "always",
-        category: "linkedin profile"
       }
     );
 
