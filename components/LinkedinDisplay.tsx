@@ -39,7 +39,7 @@ function processLinkedInText(data: LinkedInData): ProcessedData {
   const specialties = specialtiesText ? specialtiesText.split(',').map(s => s.trim()).filter(Boolean) : [];
 
   return {
-    name: data.title || extract('Title:', '\n'),
+    name: (data.title || extract('Title:', '\n')).replace(/\s*(-|\|)\s*LinkedIn\s*$/, ''),
     description: extract('About us\n', '\n'),
     industry,
     companySize,
