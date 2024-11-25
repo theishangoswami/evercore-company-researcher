@@ -40,8 +40,10 @@ export async function POST(req: NextRequest) {
       
       Now, after understanding about this company whose url is ${websiteurl}, give me headings and the relevant content about it.
 
-      Headings could be: Product, Target Users, Funding, Pricing, Company's Goal, 3 company strengths, 3 company weakness, and more, whichever are relevant. Don't have to include a specific heading if it doesn't have enough source about it, and you can also make up your own headings whichever seems apt.
-      Have max 6-7 headings not more than that.
+      Headings could be: Product, Target Users, Funding, Pricing, Company's Goal, Company Strengths, Cofounders, and more, whichever are relevant. Don't have to include a specific heading if it doesn't have enough source about it, and you can also make up your own headings whichever seems apt.
+      
+      Don't make up any information yourself, only use the information which is given in the above content.
+
       It should be (an emoji with heading) and then text with it.
       All the output content should be in simple english. Don't use any difficult words.
       
