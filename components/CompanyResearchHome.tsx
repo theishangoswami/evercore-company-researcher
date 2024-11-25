@@ -82,7 +82,7 @@ export default function CompanyResearcher() {
       }
 
       const data = await response.json();
-      return data.results.filter((item: any) => item.image && item.title).slice(0, 6);
+      return data.results.filter((item: any) => item.title).slice(0, 6);
     } catch (error) {
       console.error('Error fetching news:', error);
       throw error;
