@@ -1,5 +1,6 @@
 // components/CompetitorsDisplay.tsx
-import React from 'react';
+import React, { useState } from 'react';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 
 interface Competitor {
   title: string;
@@ -22,7 +23,23 @@ const extractDomain = (url: string) => {
 };
 
 export default function CompetitorsDisplay({ competitors }: CompetitorDisplayProps) {
+  const [showAll, setShowAll] = useState(false);
+  const INITIAL_DISPLAY_COUNT = 4;
+
   if (!competitors?.length) return null;
+
+  const visibleCompetitors = showAll 
+    ? competitors 
+    : competitors.slice(0, INITIAL_DISPLAY_COUNT);
+
+  const hasMore = competitors.length > INITIAL_DISPLAY_COUNT;
+
+  // Helper function to calculate animation delay
+  const getAnimationDelay = (index: number) => {
+    // If index is greater than INITIAL_DISPLAY_COUNT, reset to 1-4 sequence
+    const adjustedIndex = (index % INITIAL_DISPLAY_COUNT) + 1;
+    return `${adjustedIndex * 200}ms`;
+  };
 
   return (
     <div className="mt-24 space-y-6 opacity-0 animate-fade-up [animation-delay:200ms]">
@@ -30,11 +47,11 @@ export default function CompetitorsDisplay({ competitors }: CompetitorDisplayPro
         Similar Companies
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-        {competitors.map((competitor, index) => (
+        {visibleCompetitors.map((competitor, index) => (
           <div
             key={competitor.url}
-            className="bg-white p-6 border hover:ring-brand-default hover:ring-1 transition-all duration-200 opacity-0 animate-fade-up"
-            style={{ animationDelay: `${(index + 1) * 200}ms` }}
+            className="bg-white p-6 border rounded-lg hover:ring-brand-default hover:ring-1 transition-all duration-200 opacity-0 animate-fade-up"
+            style={{ animationDelay: getAnimationDelay(index) }}
           >
             <a
               href={competitor.url}
@@ -52,6 +69,22 @@ export default function CompetitorsDisplay({ competitors }: CompetitorDisplayPro
           </div>
         ))}
       </div>
+      
+      {hasMore && (
+        <div className="flex justify-start mt-6">
+          <button
+            onClick={() => setShowAll(!showAll)}
+            className="flex items-center gap-2 px-4 py-2 text-sm text-gray-600 hover:text-gray-900 transition-colors duration-200"
+          >
+            <span>{showAll ? 'Show Less' : 'Show More'}</span>
+            {showAll ? (
+              <ChevronUp className="w-4 h-4" />
+            ) : (
+              <ChevronDown className="w-4 h-4" />
+            )}
+          </button>
+        </div>
+      )}
     </div>
   );
 }

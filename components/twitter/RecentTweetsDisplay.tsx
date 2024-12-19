@@ -16,20 +16,23 @@ interface RecentTweetsDisplayProps {
 export default function RecentTweetsDisplay({ tweets }: RecentTweetsDisplayProps) {
   if (!tweets || tweets.length === 0) return null;
 
+  const validTweets = tweets.filter(tweet => {
+    const statusMatch = tweet.url.match(/\/status\/(\d+)/);
+    return statusMatch && statusMatch[1];
+  });
+
+  if (validTweets.length === 0) return null;
+
   return (
     <div className="mt-10 w-full">
-      {/* <h3 className="text-xl font-semibold mb-3 ml-1">
-        Recent Tweets
-      </h3> */}
-
       <div className="w-full overflow-x-auto py-6">
         <motion.div
           className="flex space-x-6 pb-6"
           drag="x"
-          dragConstraints={{ left: -((tweets.length * 400) - window.innerWidth), right: 0 }}
+          dragConstraints={{ left: -((validTweets.length * 400) - window.innerWidth), right: 0 }}
           dragElastic={0.3}
         >
-          {tweets.map((tweet, index) => (
+          {validTweets.map((tweet, index) => (
             <motion.div
               key={tweet.id}
               className="flex-shrink-0 w-[350px]"
@@ -39,7 +42,7 @@ export default function RecentTweetsDisplay({ tweets }: RecentTweetsDisplayProps
               data-theme="light"
             >
               <Tweet 
-                id={tweet.id.split('/').pop() || ''} 
+                id={tweet.url.match(/\/status\/(\d+)/)?.[1] || ''} 
               />
             </motion.div>
           ))}

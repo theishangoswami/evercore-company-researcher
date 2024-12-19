@@ -21,7 +21,6 @@ export async function POST(req: NextRequest) {
         summary: {
             query: `Explain in one/two lines what does this company do in simple english. Don't use any diffcult words.`
           },
-        numResults: 6,
         livecrawl: "always",
         excludeDomains: [websiteurl]
       }
