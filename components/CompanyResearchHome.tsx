@@ -8,6 +8,7 @@ import NewsDisplay from "./NewsDisplay";
 import CompanySummary from "./CompanySummar";
 import ProfileDisplay from "./twitter/TwitterProfileDisplay";
 import RecentTweetsDisplay from "./twitter/RecentTweetsDisplay";
+import YoutubeVideosDisplay from "./youtube/YoutubeVideosDisplay";
 
 export default function CompanyResearcher() {
   const [isGenerating, setIsGenerating] = useState(false);
@@ -19,6 +20,7 @@ export default function CompanyResearcher() {
   const [companySummary, setCompanySummary] = useState<any>(null);
   const [twitterProfileText, setTwitterProfileText] = useState<any>(null);
   const [recentTweets, setRecentTweets] = useState<any[]>([]);
+  const [youtubeVideos, setYoutubeVideos] = useState<any[]>([]);
 
   // LinkedIn API fetch function
   const fetchLinkedInData = async (url: string) => {
@@ -212,6 +214,28 @@ export default function CompanyResearcher() {
       throw error;
     }
   };
+  // Youtube videos fetch function
+  const fetchYoutubeVideos = async (url: string) => {
+    try {
+      const response = await fetch('/api/fetchyoutubevideos', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ websiteurl: url }),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to fetch YouTube videos');
+      }
+  
+      const data = await response.json();
+      return data.results || [];
+    } catch (error) {
+      console.error('Error fetching YouTube videos:', error);
+      throw error;
+    }
+  };
 
   // Main Research Function
   const handleResearch = async (e: FormEvent) => {
@@ -245,6 +269,10 @@ export default function CompanyResearcher() {
       const twitterPromise = fetchTwitterProfile(companyUrl)
         .then((data) => setTwitterProfileText(data))
         .catch((error) => setError(error instanceof Error ? error.message : 'An error occurred with Twitter profile'));
+
+      const youtubePromise = fetchYoutubeVideos(companyUrl)
+        .then((data) => setYoutubeVideos(data))
+        .catch((error) => setError(error instanceof Error ? error.message : 'An error occurred with YouTube videos'));
 
       await Promise.allSettled([linkedinPromise, competitorsPromise, newsPromise, websiteDataPromise, twitterPromise]);
     } finally {
@@ -297,6 +325,8 @@ export default function CompanyResearcher() {
           <RecentTweetsDisplay tweets={recentTweets} />
         </>
       )}
+
+      {youtubeVideos.length > 0 && <YoutubeVideosDisplay videos={youtubeVideos} />}
 
       {competitors.length > 0 && <CompetitorsDisplay competitors={competitors} />}
 

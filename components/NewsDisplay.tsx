@@ -40,7 +40,7 @@ const NewsDisplay: React.FC<NewsDisplayProps> = ({ news }) => {
             href={item.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex-shrink-0 w-60 md:w-72 bg-white border rounded-none shadow-sm overflow-hidden transition-all hover:scale-105 hover:shadow-lg"
+            className="flex-shrink-0 w-60 md:w-72 bg-white border rounded-none shadow-sm overflow-hidden transition-all hover:scale-105 hover:shadow-md"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: index * 0.1 }}
@@ -58,7 +58,7 @@ const NewsDisplay: React.FC<NewsDisplayProps> = ({ news }) => {
                     imgElement.style.display = 'none';
                     imgElement.parentElement!.classList.add('bg-blue-100');
                     imgElement.parentElement!.innerHTML = `
-                      <div class="flex items-center justify-center h-full text-gray-500 p-3">
+                      <div class="flex items-center justify-center h-full text-gray-500 p-3 group-hover:text-brand-default">
                         ${item.title.slice(0, 50)}${item.title.length > 50 ? '...' : ''}
                       </div>
                     `;
