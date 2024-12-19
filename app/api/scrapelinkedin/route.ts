@@ -24,6 +24,8 @@ export async function POST(req: NextRequest) {
       }
     );
 
+    console.log('LinkedIn Data:', result.results);
+
     return NextResponse.json({ results: result.results });
   } catch (error) {
     return NextResponse.json({ error: `Failed to perform search | ${error}` }, { status: 500 });

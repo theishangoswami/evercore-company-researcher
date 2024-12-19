@@ -23,31 +23,56 @@ interface ProcessedData {
 }
 
 function processLinkedInText(data: LinkedInData): ProcessedData {
-  const extract = (start: string, end: string) => {
-    const startIndex = data.text.indexOf(start);
-    if (startIndex === -1) return '';
-    const afterStart = data.text.substring(startIndex + start.length);
-    const endIndex = end ? afterStart.indexOf(end) : -1;
-    return endIndex === -1 ? afterStart.trim() : afterStart.substring(0, endIndex).trim();
+  const extract = (marker: string): string => {
+    const index = data.text.indexOf(marker);
+    if (index === -1) return '';
+    
+    // Find the start of the actual content after the marker
+    const start = index + marker.length;
+    
+    // Look for the next marker or section
+    const possibleEndMarkers = ['Industry', 'Company size', 'Headquarters', 'Type', 'Locations', 'Employees at', 'Updates', '\n\n'];
+    let end = data.text.length;
+    
+    for (const endMarker of possibleEndMarkers) {
+      const nextIndex = data.text.indexOf(endMarker, start);
+      if (nextIndex !== -1 && nextIndex < end && nextIndex > start) {
+        end = nextIndex;
+      }
+    }
+    
+    return data.text.substring(start, end).trim();
   };
 
-  const companySize = extract('Company size\n', '\n');
-  const headquarters = extract('Headquarters\n', '\n');
-  const type = extract('Type\n', '\n');
-  const industry = extract('Industry\n', '\n');
-  const specialtiesText = extract('Specialties\n', '\n');
-  const specialties = specialtiesText ? specialtiesText.split(',').map(s => s.trim()).filter(Boolean) : [];
+  // Extract description from "About us" section
+  const aboutIndex = data.text.indexOf('About us');
+  const description = aboutIndex !== -1
+    ? extract('About us').split('\n')[0].trim()
+    : '';
+
+  // Extract other fields
+  const industry = extract('Industry');
+  const companySize = extract('Company size');
+  const headquarters = extract('Headquarters');
+  const type = extract('Type');
+  
+  // Get company name from title or the beginning of the text
+  const name = data.title.replace(/\s*(-|\|)\s*LinkedIn\s*$/, '').trim();
+
+  // For now, we'll skip specialties as they're not clearly marked in the new format
+  const specialties: string[] = [];
 
   return {
-    name: (data.title || extract('Title:', '\n')).replace(/\s*(-|\|)\s*LinkedIn\s*$/, ''),
-    description: extract('About us\n', '\n'),
+    name,
+    description,
     industry,
     companySize,
     headquarters,
     type,
     linkedinUrl: data.url,
     specialties,
-    logo: data.image
+    logo: data.image,
+    website: undefined
   };
 }
 

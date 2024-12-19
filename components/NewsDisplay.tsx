@@ -54,12 +54,21 @@ const NewsDisplay: React.FC<NewsDisplayProps> = ({ news }) => {
                   onError={(e) => {
                     const imgElement = e.target as HTMLImageElement;
                     imgElement.onerror = null;
-                    imgElement.src = '/placeholder-news.jpg';
+                    // Instead of loading a placeholder image, show a div with background color
+                    imgElement.style.display = 'none';
+                    imgElement.parentElement!.classList.add('bg-blue-100');
+                    imgElement.parentElement!.innerHTML = `
+                      <div class="flex items-center justify-center h-full text-gray-500 p-3">
+                        ${item.title.slice(0, 50)}${item.title.length > 50 ? '...' : ''}
+                      </div>
+                    `;
                   }}
                 />
               ) : (
-                <div className="flex items-center justify-center h-full bg-gray-100 text-gray-500 font-semibold">
-                  {item.title}
+                <div className="flex items-center justify-center h-full bg-gray-100 text-gray-500">
+                  <span className="px-4 text-center">
+                    {item.title.slice(0, 50)}${item.title.length > 50 ? '...' : ''}
+                  </span>
                 </div>
               )}
             </div>
