@@ -1,4 +1,4 @@
-// app/api/scrapelinkedin/route.ts
+// app/api/twitter-profile-fetch/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import Exa from "exa-js";
 
@@ -9,20 +9,21 @@ const exa = new Exa(process.env.EXA_API_KEY as string);
 export async function POST(req: NextRequest) {
   try {
     const { websiteurl } = await req.json();
+
     if (!websiteurl) {
-      return NextResponse.json({ error: 'Website URL is required' }, { status: 400 });
+      return NextResponse.json({ error: 'websiteurl is required' }, { status: 400 });
     }
 
-    // Use Exa to search for content related to the claim
     const result = await exa.searchAndContents(
-      `${websiteurl} Linkedin profile:`,
-      {
-        type: "keyword",
-        text: true,
-        numResults: 1,
-        livecrawl: "always",
-      }
-    );
+        `${websiteurl} Twitter (X) profile:`,
+        {
+          type: "keyword",
+          text: true,
+          numResults: 1,
+          livecrawl: "always",
+          includeDomains: ["x.com"]
+        }
+    )
 
     return NextResponse.json({ results: result.results });
   } catch (error) {

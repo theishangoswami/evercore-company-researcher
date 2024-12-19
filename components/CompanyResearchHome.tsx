@@ -6,6 +6,7 @@ import LinkedInDisplay from "./LinkedinDisplay";
 import CompetitorsDisplay from "./CompetitorsDisplay";
 import NewsDisplay from "./NewsDisplay";
 import CompanySummary from "./CompanySummar";
+import ProfileDisplay from "./twitter/TwitterProfileDisplay";
 
 export default function CompanyResearcher() {
   const [isGenerating, setIsGenerating] = useState(false);
@@ -15,6 +16,7 @@ export default function CompanyResearcher() {
   const [competitors, setCompetitors] = useState<any>([]);
   const [news, setNews] = useState<any[]>([]);
   const [companySummary, setCompanySummary] = useState<any>(null);
+  const [twitterProfileText, setTwitterProfileText] = useState<any>(null);
 
   // LinkedIn API fetch function
   const fetchLinkedInData = async (url: string) => {
@@ -150,6 +152,35 @@ export default function CompanyResearcher() {
     }
   };
 
+  // Twitter profile fetch function
+  const fetchTwitterProfile = async (url: string) => {
+    try {
+      const response = await fetch('/api/scrapetwitterprofile', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ websiteurl: url }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch Twitter profile');
+      }
+
+      const data = await response.json();
+      if (data.results && data.results.length > 0) {
+        const result = data.results[0];
+        return {
+          text: result.text,
+          username: result.author
+        };
+      }
+      return null;
+    } catch (error) {
+      console.error('Error fetching Twitter profile:', error);
+      throw error;
+    }
+  };
 
   // Main Research Function
   const handleResearch = async (e: FormEvent) => {
@@ -180,7 +211,11 @@ export default function CompanyResearcher() {
         .then((data) => setCompanySummary(data.companySummary))
         .catch((error) => setError(error instanceof Error ? error.message : 'An error occurred with company summary'));
 
-      await Promise.allSettled([linkedinPromise, competitorsPromise, newsPromise, websiteDataPromise]);
+      const twitterPromise = fetchTwitterProfile(companyUrl)
+        .then((data) => setTwitterProfileText(data))
+        .catch((error) => setError(error instanceof Error ? error.message : 'An error occurred with Twitter profile'));
+
+      await Promise.allSettled([linkedinPromise, competitorsPromise, newsPromise, websiteDataPromise, twitterPromise]);
     } finally {
       setIsGenerating(false);
     }
@@ -224,6 +259,8 @@ export default function CompanyResearcher() {
       {linkedinData && <LinkedInDisplay data={linkedinData} />}
 
       {companySummary && <CompanySummary summary={companySummary} />}
+
+      {twitterProfileText && <ProfileDisplay rawText={twitterProfileText.text} username={twitterProfileText.username} />}
 
       {competitors.length > 0 && <CompetitorsDisplay competitors={competitors} />}
 
