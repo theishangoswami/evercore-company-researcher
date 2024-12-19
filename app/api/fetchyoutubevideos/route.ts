@@ -1,4 +1,4 @@
-// app/api/scrapetwitterprofile/route.ts
+// app/api/fetchyoutubevideos/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import Exa from "exa-js";
 
@@ -14,16 +14,13 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'websiteurl is required' }, { status: 400 });
     }
 
-    const result = await exa.searchAndContents(
-        `${websiteurl} Twitter (X) profile:`,
+    const result = await exa.search(
+        websiteurl,
         {
           type: "keyword",
-          text: true,
-          numResults: 1,
-          livecrawl: "always",
-          includeDomains: ["x.com"]
+          includeDomains: ["youtube.com"]
         }
-    )
+      )
 
     return NextResponse.json({ results: result.results });
   } catch (error) {

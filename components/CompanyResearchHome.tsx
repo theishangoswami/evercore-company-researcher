@@ -7,6 +7,7 @@ import CompetitorsDisplay from "./CompetitorsDisplay";
 import NewsDisplay from "./NewsDisplay";
 import CompanySummary from "./CompanySummar";
 import ProfileDisplay from "./twitter/TwitterProfileDisplay";
+import RecentTweetsDisplay from "./twitter/RecentTweetsDisplay";
 
 export default function CompanyResearcher() {
   const [isGenerating, setIsGenerating] = useState(false);
@@ -17,6 +18,7 @@ export default function CompanyResearcher() {
   const [news, setNews] = useState<any[]>([]);
   const [companySummary, setCompanySummary] = useState<any>(null);
   const [twitterProfileText, setTwitterProfileText] = useState<any>(null);
+  const [recentTweets, setRecentTweets] = useState<any[]>([]);
 
   // LinkedIn API fetch function
   const fetchLinkedInData = async (url: string) => {
@@ -152,6 +154,29 @@ export default function CompanyResearcher() {
     }
   };
 
+  // Recent tweets fetch function
+  const fetchRecentTweets = async (username: string) => {
+    try {
+      const response = await fetch('/api/scraperecenttweets', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch recent tweets');
+      }
+
+      const data = await response.json();
+      return data.results || [];
+    } catch (error) {
+      console.error('Error fetching recent tweets:', error);
+      throw error;
+    }
+  };
+
   // Twitter profile fetch function
   const fetchTwitterProfile = async (url: string) => {
     try {
@@ -170,6 +195,12 @@ export default function CompanyResearcher() {
       const data = await response.json();
       if (data.results && data.results.length > 0) {
         const result = data.results[0];
+        // Fetch tweets separately without waiting
+        if (result.author) {
+          fetchRecentTweets(result.author)
+            .then(tweets => setRecentTweets(tweets))
+            .catch(error => console.error('Error fetching recent tweets:', error));
+        }
         return {
           text: result.text,
           username: result.author
@@ -260,7 +291,12 @@ export default function CompanyResearcher() {
 
       {companySummary && <CompanySummary summary={companySummary} />}
 
-      {twitterProfileText && <ProfileDisplay rawText={twitterProfileText.text} username={twitterProfileText.username} />}
+      {twitterProfileText && (
+        <>
+          <ProfileDisplay rawText={twitterProfileText.text} username={twitterProfileText.username} />
+          <RecentTweetsDisplay tweets={recentTweets} />
+        </>
+      )}
 
       {competitors.length > 0 && <CompetitorsDisplay competitors={competitors} />}
 
