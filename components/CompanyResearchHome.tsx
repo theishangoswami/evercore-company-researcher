@@ -6,6 +6,7 @@ import LinkedInDisplay from "./linkedin/LinkedinDisplay";
 import CompetitorsDisplay from "./competitors/CompetitorsDisplay";
 import NewsDisplay from "./news/NewsDisplay";
 import CompanySummary from "./companycontent/CompanySummar";
+import FundingDisplay from "./companycontent/FundingDisplay";
 import ProfileDisplay from "./twitter/TwitterProfileDisplay";
 import RecentTweetsDisplay from "./twitter/RecentTweetsDisplay";
 import YoutubeVideosDisplay from "./youtube/YoutubeVideosDisplay";
@@ -25,19 +26,32 @@ export default function CompanyResearcher() {
   const [youtubeVideos, setYoutubeVideos] = useState<any[]>([]);
   const [redditPosts, setRedditPosts] = useState<any[]>([]);
   const [githubUrl, setGithubUrl] = useState<string | null>(null);
+  const [fundingData, setFundingData] = useState<any>(null);
 
-  // Function to extract domain name from URL
-  const extractDomain = (url: string): string => {
+  // Function to validate and extract domain name from URL
+  const extractDomain = (url: string): string | null => {
     try {
-      // Add protocol if not present
-      const urlWithProtocol = url.startsWith('http') ? url : `https://${url}`;
-      const domain = new URL(urlWithProtocol).hostname;
-      // Remove 'www.' if present
-      return domain.replace(/^www\./, '');
+      // Remove any trailing slashes and get everything before the first slash
+      const cleanUrl = url.trim().toLowerCase().split('/')[0];
+      
+      // Regular expression to validate domain format
+      const domainRegex = /^(https?:\/\/)?(www\.)?[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]\.[a-zA-Z]{2,}$/;
+      
+      if (!domainRegex.test(cleanUrl)) {
+        return null;
+      }
+
+      // If URL starts with http(s), parse it properly
+      if (cleanUrl.startsWith('http')) {
+        const parsedUrl = new URL(cleanUrl);
+        return parsedUrl.hostname.replace(/^www\./, '');
+      }
+      
+      // Otherwise just remove www. if present
+      return cleanUrl.replace(/^www\./, '');
+
     } catch (error) {
-      // If URL parsing fails, return the original input
-      // This allows for direct domain input like "exa.ai"
-      return url.replace(/^www\./, '');
+      return null;
     }
   };
 
@@ -305,6 +319,32 @@ export default function CompanyResearcher() {
     }
   };
 
+  // Funding API fetch function
+  const fetchFunding = async (url: string) => {
+    try {
+      const response = await fetch('/api/fetchfunding', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ websiteurl: url }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch funding data');
+      }
+
+      const data = await response.json();
+      if (data.results && data.results.length > 0) {
+        return data.results[0];
+      }
+      return null;
+    } catch (error) {
+      console.error('Error fetching funding data:', error);
+      throw error;
+    }
+  };
+
   // Main Research Function
   const handleResearch = async (e: FormEvent) => {
     e.preventDefault();
@@ -314,11 +354,15 @@ export default function CompanyResearcher() {
       return;
     }
 
+    const domainName = extractDomain(companyUrl);
+    
+    if (!domainName) {
+      setError("Please enter a valid URL (e.g., 'example.com', 'www.example.com', or 'https://example.com')");
+      return;
+    }
+
     setIsGenerating(true);
     setError(null);
-
-    // Extract the domain name from the input URL
-    const domainName = extractDomain(companyUrl);
 
     try {
       const linkedinPromise = fetchLinkedInData(domainName)
@@ -353,6 +397,10 @@ export default function CompanyResearcher() {
         .then((url) => setGithubUrl(url))
         .catch((error) => setError(error instanceof Error ? error.message : 'An error occurred with GitHub'));
 
+      const fundingPromise = fetchFunding(domainName)
+        .then((data) => setFundingData(data))
+        .catch((error) => setError(error instanceof Error ? error.message : 'An error occurred with funding data'));
+
       await Promise.allSettled([
         linkedinPromise,
         competitorsPromise,
@@ -361,7 +409,8 @@ export default function CompanyResearcher() {
         twitterPromise,
         youtubePromise,
         redditPromise,
-        githubPromise
+        githubPromise,
+        fundingPromise
       ]);
     } finally {
       setIsGenerating(false);
@@ -383,7 +432,7 @@ export default function CompanyResearcher() {
         <input
           value={companyUrl}
           onChange={(e) => setCompanyUrl(e.target.value)}
-          placeholder="Enter Company URL"
+          placeholder="Enter Company URL (e.g., example.com)"
           className="w-full bg-white p-3 border box-border outline-none rounded-sm ring-2 ring-brand-default resize-none opacity-0 animate-fade-up [animation-delay:600ms]"
         />
         <button
@@ -421,6 +470,8 @@ export default function CompanyResearcher() {
       {competitors.length > 0 && <CompetitorsDisplay competitors={competitors} />}
 
       {news.length > 0 && <NewsDisplay news={news} />}
+
+      {fundingData && <FundingDisplay fundingData={fundingData} />}
 
       {companySummary && <CompanySummary summary={companySummary} />}
 
