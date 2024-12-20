@@ -2,13 +2,14 @@
 
 "use client";
 import { useState, FormEvent } from "react";
-import LinkedInDisplay from "./LinkedinDisplay";
-import CompetitorsDisplay from "./CompetitorsDisplay";
-import NewsDisplay from "./NewsDisplay";
-import CompanySummary from "./CompanySummar";
+import LinkedInDisplay from "./linkedin/LinkedinDisplay";
+import CompetitorsDisplay from "./competitors/CompetitorsDisplay";
+import NewsDisplay from "./news/NewsDisplay";
+import CompanySummary from "./companycontent/CompanySummar";
 import ProfileDisplay from "./twitter/TwitterProfileDisplay";
 import RecentTweetsDisplay from "./twitter/RecentTweetsDisplay";
 import YoutubeVideosDisplay from "./youtube/YoutubeVideosDisplay";
+import RedditDisplay from "./reddit/RedditDisplay";
 
 export default function CompanyResearcher() {
   const [isGenerating, setIsGenerating] = useState(false);
@@ -21,6 +22,22 @@ export default function CompanyResearcher() {
   const [twitterProfileText, setTwitterProfileText] = useState<any>(null);
   const [recentTweets, setRecentTweets] = useState<any[]>([]);
   const [youtubeVideos, setYoutubeVideos] = useState<any[]>([]);
+  const [redditPosts, setRedditPosts] = useState<any[]>([]);
+
+  // Function to extract domain name from URL
+  const extractDomain = (url: string): string => {
+    try {
+      // Add protocol if not present
+      const urlWithProtocol = url.startsWith('http') ? url : `https://${url}`;
+      const domain = new URL(urlWithProtocol).hostname;
+      // Remove 'www.' if present
+      return domain.replace(/^www\./, '');
+    } catch (error) {
+      // If URL parsing fails, return the original input
+      // This allows for direct domain input like "exa.ai"
+      return url.replace(/^www\./, '');
+    }
+  };
 
   // LinkedIn API fetch function
   const fetchLinkedInData = async (url: string) => {
@@ -237,6 +254,29 @@ export default function CompanyResearcher() {
     }
   };
 
+  // Reddit posts fetch function
+  const fetchRedditPosts = async (url: string) => {
+    try {
+      const response = await fetch('/api/scrapereddit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ websiteurl: url }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch Reddit posts');
+      }
+
+      const data = await response.json();
+      return data.results || [];
+    } catch (error) {
+      console.error('Error fetching Reddit posts:', error);
+      throw error;
+    }
+  };
+
   // Main Research Function
   const handleResearch = async (e: FormEvent) => {
     e.preventDefault();
@@ -249,32 +289,47 @@ export default function CompanyResearcher() {
     setIsGenerating(true);
     setError(null);
 
+    // Extract the domain name from the input URL
+    const domainName = extractDomain(companyUrl);
+
     try {
-      const linkedinPromise = fetchLinkedInData(companyUrl)
+      const linkedinPromise = fetchLinkedInData(domainName)
         .then((data) => setLinkedinData(data))
         .catch((error) => setError(error instanceof Error ? error.message : 'An error occurred with LinkedIn'));
 
-      const competitorsPromise = fetchCompetitors(companyUrl)
+      const competitorsPromise = fetchCompetitors(domainName)
         .then((data) => setCompetitors(data))
         .catch((error) => setError(error instanceof Error ? error.message : 'An error occurred with competitors'));
 
-      const newsPromise = fetchNews(companyUrl)
+      const newsPromise = fetchNews(domainName)
         .then((data) => setNews(data))
         .catch((error) => setError(error instanceof Error ? error.message : 'An error occurred with news'));
         
-      const websiteDataPromise = fetchWebsiteData(companyUrl)
+      const websiteDataPromise = fetchWebsiteData(domainName)
         .then((data) => setCompanySummary(data.companySummary))
         .catch((error) => setError(error instanceof Error ? error.message : 'An error occurred with company summary'));
 
-      const twitterPromise = fetchTwitterProfile(companyUrl)
+      const twitterPromise = fetchTwitterProfile(domainName)
         .then((data) => setTwitterProfileText(data))
         .catch((error) => setError(error instanceof Error ? error.message : 'An error occurred with Twitter profile'));
 
-      const youtubePromise = fetchYoutubeVideos(companyUrl)
+      const youtubePromise = fetchYoutubeVideos(domainName)
         .then((data) => setYoutubeVideos(data))
         .catch((error) => setError(error instanceof Error ? error.message : 'An error occurred with YouTube videos'));
 
-      await Promise.allSettled([linkedinPromise, competitorsPromise, newsPromise, websiteDataPromise, twitterPromise]);
+      const redditPromise = fetchRedditPosts(domainName)
+        .then((data) => setRedditPosts(data))
+        .catch((error) => setError(error instanceof Error ? error.message : 'An error occurred with Reddit posts'));
+
+      await Promise.allSettled([
+        linkedinPromise,
+        competitorsPromise,
+        newsPromise,
+        websiteDataPromise,
+        twitterPromise,
+        youtubePromise,
+        redditPromise
+      ]);
     } finally {
       setIsGenerating(false);
     }
@@ -317,8 +372,6 @@ export default function CompanyResearcher() {
 
       {linkedinData && <LinkedInDisplay data={linkedinData} />}
 
-      {companySummary && <CompanySummary summary={companySummary} />}
-
       {twitterProfileText && (
         <>
           <ProfileDisplay rawText={twitterProfileText.text} username={twitterProfileText.username} />
@@ -328,9 +381,13 @@ export default function CompanyResearcher() {
 
       {youtubeVideos.length > 0 && <YoutubeVideosDisplay videos={youtubeVideos} />}
 
+      {redditPosts.length > 0 && <RedditDisplay posts={redditPosts} />}
+
       {competitors.length > 0 && <CompetitorsDisplay competitors={competitors} />}
 
       {news.length > 0 && <NewsDisplay news={news} />}
+
+      {companySummary && <CompanySummary summary={companySummary} />}
 
     </div>
   );
