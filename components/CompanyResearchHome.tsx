@@ -10,6 +10,7 @@ import ProfileDisplay from "./twitter/TwitterProfileDisplay";
 import RecentTweetsDisplay from "./twitter/RecentTweetsDisplay";
 import YoutubeVideosDisplay from "./youtube/YoutubeVideosDisplay";
 import RedditDisplay from "./reddit/RedditDisplay";
+import GitHubDisplay from "./github/GitHubDisplay";
 
 export default function CompanyResearcher() {
   const [isGenerating, setIsGenerating] = useState(false);
@@ -23,6 +24,7 @@ export default function CompanyResearcher() {
   const [recentTweets, setRecentTweets] = useState<any[]>([]);
   const [youtubeVideos, setYoutubeVideos] = useState<any[]>([]);
   const [redditPosts, setRedditPosts] = useState<any[]>([]);
+  const [githubUrl, setGithubUrl] = useState<string | null>(null);
 
   // Function to extract domain name from URL
   const extractDomain = (url: string): string => {
@@ -277,6 +279,32 @@ export default function CompanyResearcher() {
     }
   };
 
+  // GitHub URL fetch function
+  const fetchGitHubUrl = async (url: string) => {
+    try {
+      const response = await fetch('/api/fetchgithuburl', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ websiteurl: url }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch GitHub URL');
+      }
+
+      const data = await response.json();
+      if (data.results && data.results.length > 0) {
+        return data.results[0].url;
+      }
+      return null;
+    } catch (error) {
+      console.error('Error fetching GitHub URL:', error);
+      throw error;
+    }
+  };
+
   // Main Research Function
   const handleResearch = async (e: FormEvent) => {
     e.preventDefault();
@@ -321,6 +349,10 @@ export default function CompanyResearcher() {
         .then((data) => setRedditPosts(data))
         .catch((error) => setError(error instanceof Error ? error.message : 'An error occurred with Reddit posts'));
 
+      const githubPromise = fetchGitHubUrl(domainName)
+        .then((url) => setGithubUrl(url))
+        .catch((error) => setError(error instanceof Error ? error.message : 'An error occurred with GitHub'));
+
       await Promise.allSettled([
         linkedinPromise,
         competitorsPromise,
@@ -328,7 +360,8 @@ export default function CompanyResearcher() {
         websiteDataPromise,
         twitterPromise,
         youtubePromise,
-        redditPromise
+        redditPromise,
+        githubPromise
       ]);
     } finally {
       setIsGenerating(false);
@@ -378,6 +411,8 @@ export default function CompanyResearcher() {
           <RecentTweetsDisplay tweets={recentTweets} />
         </>
       )}
+
+      {githubUrl && <GitHubDisplay githubUrl={githubUrl} />}
 
       {youtubeVideos.length > 0 && <YoutubeVideosDisplay videos={youtubeVideos} />}
 
