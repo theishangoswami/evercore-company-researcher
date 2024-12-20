@@ -18,7 +18,9 @@ export async function POST(req: NextRequest) {
         websiteurl,
         {
           type: "keyword",
-          includeDomains: ["youtube.com"]
+          includeDomains: ["youtube.com"],
+          includeText: [websiteurl],
+          numResults: 10,
         }
       )
 

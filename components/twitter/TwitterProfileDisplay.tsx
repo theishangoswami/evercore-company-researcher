@@ -69,7 +69,7 @@ export default function ProfileDisplay({ rawText, username }: ProfileDisplayProp
   const { name, followers_count, friends_count, statuses_count, created_at, bio } = extractedInfo;
 
   return (
-    <div className="mt-20 w-full bg-white border shadow-sm rounded-xl overflow-hidden">
+    <div className="mt-20 w-full bg-white border shadow-sm rounded-none overflow-hidden">
       {/* Header Banner */}
       <div className="h-32 bg-gradient-to-br from-[#4C9EEB] via-[#1DA1F2] to-[#4C9EEB]"></div>
       
