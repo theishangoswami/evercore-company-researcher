@@ -1,13 +1,13 @@
 // components/twitter/TwitterProfileDisplay.tsx
-import { Calendar, Users, TwitterIcon, Link as LinkIcon } from "lucide-react";
+import { Calendar, Users, TwitterIcon, UserPlus } from "lucide-react";
 import TagPill from "../ui/tag-pill";
 
 interface ExtractedInfo {
   bio?: string;
-  profile_url?: string;
   name?: string;
   created_at?: string;
   followers_count?: string;
+  friends_count?: string;
   statuses_count?: string;
   username?: string;
 }
@@ -32,10 +32,10 @@ const extractInfoFromText = (text: string): ExtractedInfo => {
   };
 
   const regexPatterns: Record<keyof Omit<ExtractedInfo, 'bio' | 'username'>, RegExp> = {
-    profile_url: /\| profile_url:\s*([^\s|]+)/,
     name: /\| name:\s*([^|]+)/,
     created_at: /\| created_at:\s*([^|]+)/,
     followers_count: /\| followers_count:\s*([^|]+)/,
+    friends_count: /\| friends_count:\s*([^|]+)/,
     statuses_count: /\| statuses_count:\s*([^|]+)/,
   };
 
@@ -66,31 +66,74 @@ interface ProfileDisplayProps {
 
 export default function ProfileDisplay({ rawText, username }: ProfileDisplayProps) {
   const extractedInfo = extractInfoFromText(rawText);
-  const { name, followers_count, statuses_count, created_at, profile_url, bio } = extractedInfo;
+  const { name, followers_count, friends_count, statuses_count, created_at, bio } = extractedInfo;
 
   return (
-    <div className="mt-20 w-full bg-white p-4 sm:p-8 border shadow-sm rounded-none opacity-0 animate-fade-up [animation-delay:200ms]">
-      <div className="space-y-6 sm:space-y-8">
-        <div>
-          {name && <h1 className="text-2xl sm:text-3xl font-bold text-brand-default mb-1">{name}</h1>}
-          {username && <h2 className="text-gray-600 text-base sm:text-lg">@{username}</h2>}
+    <div className="mt-20 w-full bg-white border shadow-sm rounded-xl overflow-hidden">
+      {/* Header Banner */}
+      <div className="h-32 bg-gradient-to-br from-[#4C9EEB] via-[#1DA1F2] to-[#4C9EEB]"></div>
+      
+      <div className="px-6">
+        {/* Name and Username */}
+        <div className="pt-4">
+          {name && (
+            <h1 className="text-xl font-bold text-gray-900">{name}</h1>
+          )}
+          {username && (
+            <h2 className="text-gray-500">@{username}</h2>
+          )}
         </div>
-        {bio && <p className="text-gray-800 text-base sm:text-lg leading-relaxed">{bio}</p>}
 
-        <div className="flex flex-wrap gap-2 max-w-full">
+        {/* Bio */}
+        {bio && (
+          <p className="mt-4 text-gray-800 leading-relaxed">{bio}</p>
+        )}
+
+        {/* Stats Grid */}
+        <div className="mt-4 flex flex-wrap gap-6">
           {followers_count && (
-            <TagPill content={`${followers_count} followers`} icon={<Users className="w-4 h-4" />} />
+            <div className="flex items-center gap-1.5 text-gray-700">
+              <Users className="w-4 h-4" />
+              <span className="font-medium">{followers_count}</span>
+              <span className="text-gray-500">Followers</span>
+            </div>
+          )}
+          {friends_count && (
+            <div className="flex items-center gap-1.5 text-gray-700">
+              <UserPlus className="w-4 h-4" />
+              <span className="font-medium">{friends_count}</span>
+              <span className="text-gray-500">Following</span>
+            </div>
           )}
           {statuses_count && (
-            <TagPill content={`Tweeted ${statuses_count} times`} icon={<TwitterIcon className="w-4 h-4" />} />
+            <div className="flex items-center gap-1.5 text-gray-700">
+              <TwitterIcon className="w-4 h-4" />
+              <span className="font-medium">{statuses_count}</span>
+              <span className="text-gray-500">Tweets</span>
+            </div>
           )}
           {created_at && (
-            <TagPill content={`Joined in ${created_at}`} icon={<Calendar className="w-4 h-4" />} />
-          )}
-          {profile_url && (
-            <TagPill content={profile_url} icon={<LinkIcon className="w-4 h-4" />} />
+          <div className="flex items-center gap-1.5 text-gray-700">
+            <Calendar className="w-4 h-4" />
+            <span className="text-gray-500">Joined <span className="text-gray-700">{created_at}</span> </span>
+          </div>
           )}
         </div>
+
+        {/* X Profile Link */}
+        {username && (
+          <div className="flex justify-start mt-4 mb-4">
+            <a
+              href={`https://x.com/${username}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-4 py-1.5 rounded-full border border-gray-300 text-sm font-medium hover:bg-gray-50 transition-colors"
+            >
+              View on X / Twitter
+            </a>
+          </div>
+        )}
+
       </div>
     </div>
   );
