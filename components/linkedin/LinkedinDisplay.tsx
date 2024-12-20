@@ -1,5 +1,5 @@
 // LinkedInDisplay.tsx
-import { Building2, Globe, MapPin, Users, Link as LinkIcon } from 'lucide-react';
+import { Building2, Globe, MapPin, Users, Link as LinkIcon, UserCircle2, Users2 } from 'lucide-react';
 import Image from 'next/image';
 
 interface LinkedInData {
@@ -20,6 +20,7 @@ interface ProcessedData {
   linkedinUrl: string;
   logo: string;
   specialties: string[];
+  followers?: string;
 }
 
 function processLinkedInText(data: LinkedInData): ProcessedData {
@@ -43,6 +44,10 @@ function processLinkedInText(data: LinkedInData): ProcessedData {
     
     return data.text.substring(start, end).trim();
   };
+
+  // Extract followers using regex
+  const followersMatch = data.text.match(/(\d+(?:,\d+)*)\s+followers/);
+  const followers = followersMatch ? followersMatch[1] : undefined;
 
   // Extract description from "About us" section
   const aboutIndex = data.text.indexOf('About us');
@@ -72,7 +77,8 @@ function processLinkedInText(data: LinkedInData): ProcessedData {
     linkedinUrl: data.url,
     specialties,
     logo: data.image,
-    website: undefined
+    website: undefined,
+    followers
   };
 }
 
@@ -103,7 +109,7 @@ export default function LinkedInDisplay({ data }: { data: LinkedInData }) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {processedData.companySize && (
             <InfoItem
-            icon={<Users className="w-5 h-5" />}
+            icon={<Users2 className="w-5 h-5" />}
             label="Company Size"
             value={processedData.companySize}
             />
@@ -114,6 +120,13 @@ export default function LinkedInDisplay({ data }: { data: LinkedInData }) {
             label="Headquarters"
             value={processedData.headquarters}
             />
+        )}
+        {processedData.followers && (
+          <InfoItem
+            icon={<UserCircle2 className="w-5 h-5" />}
+            label="LinkedIn Followers"
+            value={`${processedData.followers} followers`}
+          />
         )}
         {processedData.industry && (
             <InfoItem
@@ -132,7 +145,7 @@ export default function LinkedInDisplay({ data }: { data: LinkedInData }) {
         {processedData.linkedinUrl && (
             <InfoItem
             icon={<LinkIcon className="w-5 h-5" />}
-            label="LinkedIn"
+            label="Profile Link"
             value={processedData.linkedinUrl}
             isLink
             />
