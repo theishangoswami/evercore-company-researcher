@@ -44,25 +44,18 @@ export default function CompanyResearcher() {
   // Function to validate and extract domain name from URL
   const extractDomain = (url: string): string | null => {
     try {
-      // Remove any trailing slashes and get everything before the first slash
-      const cleanUrl = url.trim().toLowerCase().split('/')[0];
+      let cleanUrl = url.trim().toLowerCase();
       
-      // Regular expression to validate domain format
-      const domainRegex = /^(https?:\/\/)?(www\.)?[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]\.[a-zA-Z]{2,}$/;
-      
-      if (!domainRegex.test(cleanUrl)) {
-        return null;
+      // Add protocol if missing
+      if (!cleanUrl.startsWith('http://') && !cleanUrl.startsWith('https://')) {
+        cleanUrl = 'https://' + cleanUrl;
       }
 
-      // If URL starts with http(s), parse it properly
-      if (cleanUrl.startsWith('http')) {
-        const parsedUrl = new URL(cleanUrl);
-        return parsedUrl.hostname.replace(/^www\./, '');
-      }
+      // Parse URL
+      const parsedUrl = new URL(cleanUrl);
       
-      // Otherwise just remove www. if present
-      return cleanUrl.replace(/^www\./, '');
-
+      // Get domain without www.
+      return parsedUrl.hostname.replace(/^www\./, '');
     } catch (error) {
       return null;
     }
