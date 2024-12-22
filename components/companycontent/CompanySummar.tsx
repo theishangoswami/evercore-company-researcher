@@ -21,9 +21,9 @@ const CompanySummary: React.FC<CompanySummaryProps> = ({ summary }) => {
               <div className="flex items-start gap-3">
                 <span className="text-2xl flex-shrink-0">{item.heading.split(' ')[0]}</span>
                 <div className="space-y-3 pt-1 w-full">
-                  <h3 className="font-semibold text-lg">
+                  <p className="font-semibold text-lg">
                     {item.heading.split(' ').slice(1).join(' ')}
-                  </h3>
+                  </p>
                   <p className="text-gray-700 leading-relaxed">
                     {item.text}
                   </p>

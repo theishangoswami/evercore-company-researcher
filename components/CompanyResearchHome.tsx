@@ -18,6 +18,7 @@ import WikipediaDisplay from './wikipedia/WikipediaDisplay';
 import CrunchbaseDisplay from './crunchbase/CrunchbaseDisplay';
 import PitchBookDisplay from './pitchbook/PitchBookDisplay';
 import TracxnDisplay from "./tracxn/TracxnDisplay";
+import FoundersDisplay from "./founders/FoundersDisplay";
 
 
 export default function CompanyResearcher() {
@@ -40,6 +41,7 @@ export default function CompanyResearcher() {
   const [crunchbaseData, setCrunchbaseData] = useState<any>(null);
   const [pitchbookData, setPitchbookData] = useState<any>(null);
   const [tracxnData, setTracxnData] = useState<any>(null);
+  const [founders, setFounders] = useState<any[]>([]);
 
   // Function to validate and extract domain name from URL
   const extractDomain = (url: string): string | null => {
@@ -507,6 +509,34 @@ export default function CompanyResearcher() {
     }
   };
 
+  // Founders fetch function
+  const fetchFounders = async (url: string) => {
+    try {
+      const response = await fetch('/api/fetchfounders', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ websiteurl: url }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch founders');
+      }
+
+      const data = await response.json();
+      // Filter out company and post URLs, only keep individual profiles
+      return data.results.filter((result: any) => 
+        !result.url.includes('/company/') && 
+        !result.url.includes('/post/') &&
+        result.url.includes('/in/')
+      );
+    } catch (error) {
+      console.error('Error fetching founders:', error);
+      throw error;
+    }
+  };
+
   // Main Research Function
   const handleResearch = async (e: FormEvent) => {
     e.preventDefault();
@@ -587,6 +617,10 @@ export default function CompanyResearcher() {
         .then((data) => setTracxnData(data))
         .catch((error) => setErrors(prev => ({ ...prev, tracxn: error instanceof Error ? error.message : 'An error occurred with Tracxn data' })));
 
+      const foundersPromise = fetchFounders(domainName)
+        .then((data) => setFounders(data))
+        .catch((error) => setErrors(prev => ({ ...prev, founders: error instanceof Error ? error.message : 'An error occurred with founders' })));
+
       await Promise.allSettled([
         linkedinPromise,
         competitorsPromise,
@@ -602,7 +636,8 @@ export default function CompanyResearcher() {
         wikipediaPromise,
         crunchbasePromise,
         pitchbookPromise,
-        tracxnPromise
+        tracxnPromise,
+        foundersPromise
       ]);
     } finally {
       setIsGenerating(false);
@@ -664,6 +699,8 @@ export default function CompanyResearcher() {
       {competitors.length > 0 && <CompetitorsDisplay competitors={competitors} />}
 
       {news.length > 0 && <NewsDisplay news={news} />}
+
+      {founders.length > 0 && <FoundersDisplay founders={founders} />}
 
       {wikipediaData && <WikipediaDisplay data={wikipediaData} />}
 
