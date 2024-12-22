@@ -15,6 +15,8 @@ import GitHubDisplay from "./github/GitHubDisplay";
 import FinancialReportDisplay from './financial/FinancialReportDisplay';
 import TikTokDisplay from './tiktok/TikTokDisplay';
 import WikipediaDisplay from './wikipedia/WikipediaDisplay';
+import CrunchbaseDisplay from './crunchbase/CrunchbaseDisplay';
+import PitchBookDisplay from './pitchbook/PitchBookDisplay';
 
 export default function CompanyResearcher() {
   const [isGenerating, setIsGenerating] = useState(false);
@@ -33,6 +35,8 @@ export default function CompanyResearcher() {
   const [financialReport, setFinancialReport] = useState<any>(null);
   const [tiktokData, setTiktokData] = useState<any>(null);
   const [wikipediaData, setWikipediaData] = useState<any>(null);
+  const [crunchbaseData, setCrunchbaseData] = useState<any>(null);
+  const [pitchbookData, setPitchbookData] = useState<any>(null);
 
   // Function to validate and extract domain name from URL
   const extractDomain = (url: string): string | null => {
@@ -429,6 +433,58 @@ export default function CompanyResearcher() {
     }
   };
 
+  // Crunchbase fetch function
+  const fetchCrunchbase = async (url: string) => {
+    try {
+      const response = await fetch('/api/fetchcrunchbase', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ websiteurl: url }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch Crunchbase data');
+      }
+
+      const data = await response.json();
+      if (data.results && data.results.length > 0) {
+        return data.results[0];
+      }
+      return null;
+    } catch (error) {
+      console.error('Error fetching Crunchbase data:', error);
+      throw error;
+    }
+  };
+
+  // PitchBook fetch function
+  const fetchPitchbook = async (url: string) => {
+    try {
+      const response = await fetch('/api/fetchpitchbook', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ websiteurl: url }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch PitchBook data');
+      }
+
+      const data = await response.json();
+      if (data.results && data.results.length > 0) {
+        return data.results[0];
+      }
+      return null;
+    } catch (error) {
+      console.error('Error fetching PitchBook data:', error);
+      throw error;
+    }
+  };
+
   // Main Research Function
   const handleResearch = async (e: FormEvent) => {
     e.preventDefault();
@@ -497,6 +553,14 @@ export default function CompanyResearcher() {
         .then((data) => setWikipediaData(data))
         .catch((error) => setErrors(prev => ({ ...prev, wikipedia: error instanceof Error ? error.message : 'An error occurred with Wikipedia data' })));
 
+      const crunchbasePromise = fetchCrunchbase(domainName)
+        .then((data) => setCrunchbaseData(data))
+        .catch((error) => setErrors(prev => ({ ...prev, crunchbase: error instanceof Error ? error.message : 'An error occurred with Crunchbase data' })));
+
+      const pitchbookPromise = fetchPitchbook(domainName)
+        .then((data) => setPitchbookData(data))
+        .catch((error) => setErrors(prev => ({ ...prev, pitchbook: error instanceof Error ? error.message : 'An error occurred with PitchBook data' })));
+
       await Promise.allSettled([
         linkedinPromise,
         competitorsPromise,
@@ -509,7 +573,9 @@ export default function CompanyResearcher() {
         fundingPromise,
         financialReportPromise,
         tiktokPromise,
-        wikipediaPromise
+        wikipediaPromise,
+        crunchbasePromise,
+        pitchbookPromise
       ]);
     } finally {
       setIsGenerating(false);
@@ -581,6 +647,10 @@ export default function CompanyResearcher() {
       {tiktokData && <TikTokDisplay data={tiktokData} />}
 
       {companySummary && <CompanySummary summary={companySummary} />}
+
+      {crunchbaseData && <CrunchbaseDisplay data={crunchbaseData} />}
+
+      {pitchbookData && <PitchBookDisplay data={pitchbookData} />}
 
     </div>
   );
