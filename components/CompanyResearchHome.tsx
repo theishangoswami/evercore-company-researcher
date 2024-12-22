@@ -17,6 +17,8 @@ import TikTokDisplay from './tiktok/TikTokDisplay';
 import WikipediaDisplay from './wikipedia/WikipediaDisplay';
 import CrunchbaseDisplay from './crunchbase/CrunchbaseDisplay';
 import PitchBookDisplay from './pitchbook/PitchBookDisplay';
+import TracxnDisplay from "./tracxn/TracxnDisplay";
+
 
 export default function CompanyResearcher() {
   const [isGenerating, setIsGenerating] = useState(false);
@@ -37,6 +39,7 @@ export default function CompanyResearcher() {
   const [wikipediaData, setWikipediaData] = useState<any>(null);
   const [crunchbaseData, setCrunchbaseData] = useState<any>(null);
   const [pitchbookData, setPitchbookData] = useState<any>(null);
+  const [tracxnData, setTracxnData] = useState<any>(null);
 
   // Function to validate and extract domain name from URL
   const extractDomain = (url: string): string | null => {
@@ -485,6 +488,32 @@ export default function CompanyResearcher() {
     }
   };
 
+  // Tracxn fetch function
+  const fetchTracxn = async (url: string) => {
+    try {
+      const response = await fetch('/api/fetchtracxn', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ websiteurl: url }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch Tracxn data');
+      }
+
+      const data = await response.json();
+      if (data.results && data.results.length > 0) {
+        return data.results[0];
+      }
+      return null;
+    } catch (error) {
+      console.error('Error fetching Tracxn data:', error);
+      throw error;
+    }
+  };
+
   // Main Research Function
   const handleResearch = async (e: FormEvent) => {
     e.preventDefault();
@@ -561,6 +590,10 @@ export default function CompanyResearcher() {
         .then((data) => setPitchbookData(data))
         .catch((error) => setErrors(prev => ({ ...prev, pitchbook: error instanceof Error ? error.message : 'An error occurred with PitchBook data' })));
 
+      const tracxnPromise = fetchTracxn(domainName)
+        .then((data) => setTracxnData(data))
+        .catch((error) => setErrors(prev => ({ ...prev, tracxn: error instanceof Error ? error.message : 'An error occurred with Tracxn data' })));
+
       await Promise.allSettled([
         linkedinPromise,
         competitorsPromise,
@@ -575,7 +608,8 @@ export default function CompanyResearcher() {
         tiktokPromise,
         wikipediaPromise,
         crunchbasePromise,
-        pitchbookPromise
+        pitchbookPromise,
+        tracxnPromise
       ]);
     } finally {
       setIsGenerating(false);
@@ -642,15 +676,17 @@ export default function CompanyResearcher() {
 
       {fundingData && <FundingDisplay fundingData={fundingData} />}
 
+      {crunchbaseData && <CrunchbaseDisplay data={crunchbaseData} />}
+
+      {pitchbookData && <PitchBookDisplay data={pitchbookData} />}
+
+      {tracxnData && <TracxnDisplay data={tracxnData} />}
+
       {financialReport && <FinancialReportDisplay report={financialReport} />}
 
       {tiktokData && <TikTokDisplay data={tiktokData} />}
 
       {companySummary && <CompanySummary summary={companySummary} />}
-
-      {crunchbaseData && <CrunchbaseDisplay data={crunchbaseData} />}
-
-      {pitchbookData && <PitchBookDisplay data={pitchbookData} />}
 
     </div>
   );

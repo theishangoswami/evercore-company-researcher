@@ -1,4 +1,4 @@
-// app/api/fetchcrunchbase/route.ts
+// app/api/fetchtracxn/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import Exa from "exa-js";
 
@@ -15,11 +15,11 @@ export async function POST(req: NextRequest) {
     }
 
     const result = await exa.search(
-      `${websiteurl} crunchbase page:`,
+      `${websiteurl} tracxn profile:`,
       {
         type: "keyword",
         numResults: 1,
-        includeDomains: ["crunchbase.com"],
+        includeDomains: ["tracxn.com"],
         includeText: [websiteurl]
       }
     );
