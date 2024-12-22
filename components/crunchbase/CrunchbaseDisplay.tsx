@@ -14,7 +14,7 @@ export default function CrunchbaseDisplay({ data }: CrunchbaseDisplayProps) {
   const orgName = data.title.split(' - ')[0];
 
   return (
-    <div className="mt-24">
+    <div className="mt-8">
       <a 
         href={data.url}
         target="_blank"

@@ -123,7 +123,7 @@ export default function GitHubDisplay({ githubUrl }: GitHubDisplayProps) {
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-lg p-6 mb-6 transition-all hover:shadow-xl">
+    <div className="bg-white rounded-lg shadow-lg p-6 mb-6 transition-all hover:shadow-xl mt-24">
       <div className="flex items-center gap-2 text-gray-800 mb-6">
         <FaGithub className="text-2xl" />
         <h3 className="text-2xl font-bold">GitHub</h3>

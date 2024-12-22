@@ -679,9 +679,15 @@ export default function CompanyResearcher() {
         </div>
       ))}
 
-   
-
       {linkedinData && <LinkedInDisplay data={linkedinData} />}
+
+      {youtubeVideos.length > 0 && <YoutubeVideosDisplay videos={youtubeVideos} />}
+
+      {tiktokData && <TikTokDisplay data={tiktokData} />}
+
+      {githubUrl && <GitHubDisplay githubUrl={githubUrl} />}
+
+      {redditPosts.length > 0 && <RedditDisplay posts={redditPosts} />}
 
       {twitterProfileText && (
         <>
@@ -689,12 +695,6 @@ export default function CompanyResearcher() {
           <RecentTweetsDisplay tweets={recentTweets} />
         </>
       )}
-
-      {githubUrl && <GitHubDisplay githubUrl={githubUrl} />}
-
-      {youtubeVideos.length > 0 && <YoutubeVideosDisplay videos={youtubeVideos} />}
-
-      {redditPosts.length > 0 && <RedditDisplay posts={redditPosts} />}
 
       {competitors.length > 0 && <CompetitorsDisplay competitors={competitors} />}
 
@@ -704,6 +704,8 @@ export default function CompanyResearcher() {
 
       {wikipediaData && <WikipediaDisplay data={wikipediaData} />}
 
+      {financialReport && <FinancialReportDisplay report={financialReport} />}
+
       {fundingData && <FundingDisplay fundingData={fundingData} />}
 
       {crunchbaseData && <CrunchbaseDisplay data={crunchbaseData} />}
@@ -711,10 +713,6 @@ export default function CompanyResearcher() {
       {pitchbookData && <PitchBookDisplay data={pitchbookData} />}
 
       {tracxnData && <TracxnDisplay data={tracxnData} />}
-
-      {financialReport && <FinancialReportDisplay report={financialReport} />}
-
-      {tiktokData && <TikTokDisplay data={tiktokData} />}
 
       {companySummary && <CompanySummary summary={companySummary} />}
 

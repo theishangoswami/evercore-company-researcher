@@ -11,7 +11,7 @@ interface FoundersDisplayProps {
 
 export default function FoundersDisplay({ founders }: FoundersDisplayProps) {
   return (
-    <div className="bg-white rounded-none p-8 mb-8 border border-gray-200">
+    <div className="bg-white rounded-none p-6 mb-8 border border-gray-200 mt-20">
       <h3 className="text-xl text-gray-800 font-semibold tracking-tight mb-8">
         Founders
       </h3>
