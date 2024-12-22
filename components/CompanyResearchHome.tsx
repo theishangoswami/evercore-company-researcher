@@ -12,6 +12,7 @@ import RecentTweetsDisplay from "./twitter/RecentTweetsDisplay";
 import YoutubeVideosDisplay from "./youtube/YoutubeVideosDisplay";
 import RedditDisplay from "./reddit/RedditDisplay";
 import GitHubDisplay from "./github/GitHubDisplay";
+import FinancialReportDisplay from './financial/FinancialReportDisplay';
 
 export default function CompanyResearcher() {
   const [isGenerating, setIsGenerating] = useState(false);
@@ -27,6 +28,7 @@ export default function CompanyResearcher() {
   const [redditPosts, setRedditPosts] = useState<any[]>([]);
   const [githubUrl, setGithubUrl] = useState<string | null>(null);
   const [fundingData, setFundingData] = useState<any>(null);
+  const [financialReport, setFinancialReport] = useState<any>(null);
 
   // Function to validate and extract domain name from URL
   const extractDomain = (url: string): string | null => {
@@ -345,6 +347,29 @@ export default function CompanyResearcher() {
     }
   };
 
+  // Financial report fetch function
+  const fetchFinancialReport = async (url: string) => {
+    try {
+      const response = await fetch('/api/fetchfinancialreport', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ websiteurl: url }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch financial report');
+      }
+
+      const data = await response.json();
+      return data.results || null;
+    } catch (error) {
+      console.error('Error fetching financial report:', error);
+      throw error;
+    }
+  };
+
   // Main Research Function
   const handleResearch = async (e: FormEvent) => {
     e.preventDefault();
@@ -401,6 +426,10 @@ export default function CompanyResearcher() {
         .then((data) => setFundingData(data))
         .catch((error) => setError(error instanceof Error ? error.message : 'An error occurred with funding data'));
 
+      const financialReportPromise = fetchFinancialReport(domainName)
+        .then((data) => setFinancialReport(data))
+        .catch((error) => setError(error instanceof Error ? error.message : 'An error occurred with financial report'));
+
       await Promise.allSettled([
         linkedinPromise,
         competitorsPromise,
@@ -410,7 +439,8 @@ export default function CompanyResearcher() {
         youtubePromise,
         redditPromise,
         githubPromise,
-        fundingPromise
+        fundingPromise,
+        financialReportPromise
       ]);
     } finally {
       setIsGenerating(false);
@@ -472,6 +502,8 @@ export default function CompanyResearcher() {
       {news.length > 0 && <NewsDisplay news={news} />}
 
       {fundingData && <FundingDisplay fundingData={fundingData} />}
+
+      {financialReport && <FinancialReportDisplay report={financialReport} />}
 
       {companySummary && <CompanySummary summary={companySummary} />}
 
