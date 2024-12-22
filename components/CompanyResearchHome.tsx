@@ -13,11 +13,13 @@ import YoutubeVideosDisplay from "./youtube/YoutubeVideosDisplay";
 import RedditDisplay from "./reddit/RedditDisplay";
 import GitHubDisplay from "./github/GitHubDisplay";
 import FinancialReportDisplay from './financial/FinancialReportDisplay';
+import TikTokDisplay from './tiktok/TikTokDisplay';
+import WikipediaDisplay from './wikipedia/WikipediaDisplay';
 
 export default function CompanyResearcher() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [companyUrl, setCompanyUrl] = useState('');
-  const [error, setError] = useState<string | null>(null);
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [linkedinData, setLinkedinData] = useState<any>(null);
   const [competitors, setCompetitors] = useState<any>([]);
   const [news, setNews] = useState<any[]>([]);
@@ -29,6 +31,8 @@ export default function CompanyResearcher() {
   const [githubUrl, setGithubUrl] = useState<string | null>(null);
   const [fundingData, setFundingData] = useState<any>(null);
   const [financialReport, setFinancialReport] = useState<any>(null);
+  const [tiktokData, setTiktokData] = useState<any>(null);
+  const [wikipediaData, setWikipediaData] = useState<any>(null);
 
   // Function to validate and extract domain name from URL
   const extractDomain = (url: string): string | null => {
@@ -370,65 +374,128 @@ export default function CompanyResearcher() {
     }
   };
 
+  // TikTok fetch function
+  const fetchTikTokProfile = async (url: string) => {
+    try {
+      const response = await fetch('/api/fetchtiktok', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ websiteurl: url }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch TikTok profile');
+      }
+
+      const data = await response.json();
+      if (data.results && data.results.length > 0) {
+        return data.results[0];
+      }
+      return null;
+    } catch (error) {
+      console.error('Error fetching TikTok profile:', error);
+      throw error;
+    }
+  };
+
+  // Wikipedia fetch function
+  const fetchWikipedia = async (url: string) => {
+    try {
+      const response = await fetch('/api/fetchwikipedia', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ websiteurl: url }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch Wikipedia data');
+      }
+
+      const data = await response.json();
+      if (data.results && data.results.length > 0) {
+        return {
+          text: data.results[0].text,
+          url: data.results[0].url
+        };
+      }
+      return null;
+    } catch (error) {
+      console.error('Error fetching Wikipedia data:', error);
+      throw error;
+    }
+  };
+
   // Main Research Function
   const handleResearch = async (e: FormEvent) => {
     e.preventDefault();
 
     if (!companyUrl) {
-      setError("Please enter a company URL");
+      setErrors({ form: "Please enter a company URL" });
       return;
     }
 
     const domainName = extractDomain(companyUrl);
     
     if (!domainName) {
-      setError("Please enter a valid URL (e.g., 'example.com', 'www.example.com', or 'https://example.com')");
+      setErrors({ form: "Please enter a valid URL (e.g., 'example.com', 'www.example.com', or 'https://example.com')" });
       return;
     }
 
     setIsGenerating(true);
-    setError(null);
+    setErrors({});
 
     try {
       const linkedinPromise = fetchLinkedInData(domainName)
         .then((data) => setLinkedinData(data))
-        .catch((error) => setError(error instanceof Error ? error.message : 'An error occurred with LinkedIn'));
+        .catch((error) => setErrors(prev => ({ ...prev, linkedin: error instanceof Error ? error.message : 'An error occurred with LinkedIn' })));
 
       const competitorsPromise = fetchCompetitors(domainName)
         .then((data) => setCompetitors(data))
-        .catch((error) => setError(error instanceof Error ? error.message : 'An error occurred with competitors'));
+        .catch((error) => setErrors(prev => ({ ...prev, competitors: error instanceof Error ? error.message : 'An error occurred with competitors' })));
 
       const newsPromise = fetchNews(domainName)
         .then((data) => setNews(data))
-        .catch((error) => setError(error instanceof Error ? error.message : 'An error occurred with news'));
+        .catch((error) => setErrors(prev => ({ ...prev, news: error instanceof Error ? error.message : 'An error occurred with news' })));
         
       const websiteDataPromise = fetchWebsiteData(domainName)
         .then((data) => setCompanySummary(data.companySummary))
-        .catch((error) => setError(error instanceof Error ? error.message : 'An error occurred with company summary'));
+        .catch((error) => setErrors(prev => ({ ...prev, summary: error instanceof Error ? error.message : 'An error occurred with company summary' })));
 
       const twitterPromise = fetchTwitterProfile(domainName)
         .then((data) => setTwitterProfileText(data))
-        .catch((error) => setError(error instanceof Error ? error.message : 'An error occurred with Twitter profile'));
+        .catch((error) => setErrors(prev => ({ ...prev, twitter: error instanceof Error ? error.message : 'An error occurred with Twitter profile' })));
 
       const youtubePromise = fetchYoutubeVideos(domainName)
         .then((data) => setYoutubeVideos(data))
-        .catch((error) => setError(error instanceof Error ? error.message : 'An error occurred with YouTube videos'));
+        .catch((error) => setErrors(prev => ({ ...prev, youtube: error instanceof Error ? error.message : 'An error occurred with YouTube videos' })));
 
       const redditPromise = fetchRedditPosts(domainName)
         .then((data) => setRedditPosts(data))
-        .catch((error) => setError(error instanceof Error ? error.message : 'An error occurred with Reddit posts'));
+        .catch((error) => setErrors(prev => ({ ...prev, reddit: error instanceof Error ? error.message : 'An error occurred with Reddit posts' })));
 
       const githubPromise = fetchGitHubUrl(domainName)
         .then((url) => setGithubUrl(url))
-        .catch((error) => setError(error instanceof Error ? error.message : 'An error occurred with GitHub'));
+        .catch((error) => setErrors(prev => ({ ...prev, github: error instanceof Error ? error.message : 'An error occurred with GitHub' })));
 
       const fundingPromise = fetchFunding(domainName)
         .then((data) => setFundingData(data))
-        .catch((error) => setError(error instanceof Error ? error.message : 'An error occurred with funding data'));
+        .catch((error) => setErrors(prev => ({ ...prev, funding: error instanceof Error ? error.message : 'An error occurred with funding data' })));
 
       const financialReportPromise = fetchFinancialReport(domainName)
         .then((data) => setFinancialReport(data))
-        .catch((error) => setError(error instanceof Error ? error.message : 'An error occurred with financial report'));
+        .catch((error) => setErrors(prev => ({ ...prev, financial: error instanceof Error ? error.message : 'An error occurred with financial report' })));
+
+      const tiktokPromise = fetchTikTokProfile(domainName)
+        .then((data) => setTiktokData(data))
+        .catch((error) => setErrors(prev => ({ ...prev, tiktok: error instanceof Error ? error.message : 'An error occurred with TikTok profile' })));
+
+      const wikipediaPromise = fetchWikipedia(domainName)
+        .then((data) => setWikipediaData(data))
+        .catch((error) => setErrors(prev => ({ ...prev, wikipedia: error instanceof Error ? error.message : 'An error occurred with Wikipedia data' })));
 
       await Promise.allSettled([
         linkedinPromise,
@@ -440,7 +507,9 @@ export default function CompanyResearcher() {
         redditPromise,
         githubPromise,
         fundingPromise,
-        financialReportPromise
+        financialReportPromise,
+        tiktokPromise,
+        wikipediaPromise
       ]);
     } finally {
       setIsGenerating(false);
@@ -476,11 +545,13 @@ export default function CompanyResearcher() {
         </button>
       </form>
 
-      {error && (
-        <div className="mt-4 mb-4 p-3 bg-red-100 border border-red-400 text-red-700">
-          {error}
+      {Object.entries(errors).map(([key, message]) => (
+        <div key={key} className="mt-4 mb-4 p-3 bg-red-100 border border-red-400 text-red-700">
+          {message}
         </div>
-      )}
+      ))}
+
+   
 
       {linkedinData && <LinkedInDisplay data={linkedinData} />}
 
@@ -501,9 +572,13 @@ export default function CompanyResearcher() {
 
       {news.length > 0 && <NewsDisplay news={news} />}
 
+      {wikipediaData && <WikipediaDisplay data={wikipediaData} />}
+
       {fundingData && <FundingDisplay fundingData={fundingData} />}
 
       {financialReport && <FinancialReportDisplay report={financialReport} />}
+
+      {tiktokData && <TikTokDisplay data={tiktokData} />}
 
       {companySummary && <CompanySummary summary={companySummary} />}
 
