@@ -100,7 +100,7 @@ export default function LinkedInDisplay({ data }: { data: LinkedInData }) {
         )}
         <div className="text-left">
           <h2 className="text-2xl font-bold mb-4">{processedData.name}</h2>
-            <p className="text-lg text-gray-800 leading-relaxed">
+            <p className="text-lg text-gray-800 leading-relaxed line-clamp-6">
               {processedData.description}
             </p>
         </div>
@@ -133,6 +133,7 @@ export default function LinkedInDisplay({ data }: { data: LinkedInData }) {
             icon={<Globe className="w-5 h-5" />}
             label="Industry"
             value={processedData.industry}
+            maxLines={2}
             />
         )}
         {processedData.type && (
@@ -140,6 +141,7 @@ export default function LinkedInDisplay({ data }: { data: LinkedInData }) {
             icon={<Building2 className="w-5 h-5" />}
             label="Company Type"
             value={processedData.type}
+            maxLines={2}
             />
         )}
         {processedData.linkedinUrl && (
@@ -175,12 +177,14 @@ const InfoItem = ({
   icon,
   label,
   value,
-  isLink = false
+  isLink = false,
+  maxLines
 }: {
   icon: React.ReactNode;
   label: string;
   value: string;
   isLink?: boolean;
+  maxLines?: number;
 }) => (
   <div className="flex items-start gap-3">
     <div className="text-blue-600 mt-1">{icon}</div>
@@ -197,7 +201,7 @@ const InfoItem = ({
           {value}
         </a>
       ) : (
-        <p className="text-gray-600 break-words">{value}</p>
+        <p className={`text-gray-600 break-words ${maxLines ? 'line-clamp-' + maxLines : ''}`}>{value}</p>
       )}
 
     </div>

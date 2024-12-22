@@ -49,8 +49,6 @@ export async function POST(req: NextRequest) {
       
       Output the result as valid JSON.`
     });
-
-    console.log('LLM response:', object);
     
     // Return the sections array from the response
     return NextResponse.json({ result: object.sections });

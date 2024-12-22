@@ -1,6 +1,7 @@
-import { TwitterIcon } from "lucide-react";
+import { TwitterIcon, ChevronDown, ChevronUp } from "lucide-react";
 import { Tweet } from "react-tweet";
 import { motion } from "framer-motion";
+import { useState } from "react";
 
 interface Tweet {
   id: string;
@@ -14,6 +15,8 @@ interface RecentTweetsDisplayProps {
 }
 
 export default function RecentTweetsDisplay({ tweets }: RecentTweetsDisplayProps) {
+  const [isExpanded, setIsExpanded] = useState(false);
+
   if (!tweets || tweets.length === 0) return null;
 
   const validTweets = tweets.filter(tweet => {
@@ -35,18 +38,36 @@ export default function RecentTweetsDisplay({ tweets }: RecentTweetsDisplayProps
           {validTweets.map((tweet, index) => (
             <motion.div
               key={tweet.id}
-              className="flex-shrink-0 w-[350px]"
+              className="flex-shrink-0 w-[350px] relative"
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: index * 0.1 }}
               data-theme="light"
             >
-              <Tweet 
-                id={tweet.url.match(/\/status\/(\d+)/)?.[1] || ''} 
-              />
+              <div className={`${isExpanded ? '' : 'max-h-[500px] overflow-hidden'}`}>
+                <Tweet 
+                  id={tweet.url.match(/\/status\/(\d+)/)?.[1] || ''} 
+                />
+              </div>
             </motion.div>
           ))}
         </motion.div>
+      </div>
+      <div className="flex justify-start mt-4 pl-2">
+        <button
+          onClick={() => setIsExpanded(!isExpanded)}
+          className="text-sm text-gray-600 hover:text-gray-800 transition-colors flex items-center gap-2"
+        >
+          {isExpanded ? (
+            <>
+              Show less <ChevronUp className="w-4 h-4" />
+            </>
+          ) : (
+            <>
+              Show full tweets <ChevronDown className="w-4 h-4" />
+            </>
+          )}
+        </button>
       </div>
     </div>
   );

@@ -1,6 +1,5 @@
 // components/twitter/TwitterProfileDisplay.tsx
 import { Calendar, Users, TwitterIcon, UserPlus } from "lucide-react";
-import TagPill from "../ui/tag-pill";
 
 interface ExtractedInfo {
   bio?: string;
@@ -36,7 +35,7 @@ const extractInfoFromText = (text: string): ExtractedInfo => {
     created_at: /\| created_at:\s*([^|]+)/,
     followers_count: /\| followers_count:\s*([^|]+)/,
     friends_count: /\| friends_count:\s*([^|]+)/,
-    statuses_count: /\| statuses_count:\s*([^|]+)/,
+    statuses_count: /\| statuses_count:\s*(\d+(?:,\d+)*)/,
   };
 
   // Extract and process each field
@@ -57,6 +56,16 @@ const extractInfoFromText = (text: string): ExtractedInfo => {
   });
 
   return info;
+};
+
+const formatNumber = (numStr: string): string => {
+  const num = parseInt(numStr.replace(/,/g, ''));
+  if (num >= 1000000) {
+    return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+  } else if (num >= 1000) {
+    return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
+  }
+  return numStr;
 };
 
 interface ProfileDisplayProps {
@@ -94,21 +103,21 @@ export default function ProfileDisplay({ rawText, username }: ProfileDisplayProp
           {followers_count && (
             <div className="flex items-center gap-1.5 text-gray-700">
               <Users className="w-4 h-4" />
-              <span className="font-medium">{followers_count}</span>
+              <span className="font-medium">{formatNumber(followers_count)}</span>
               <span className="text-gray-500">Followers</span>
             </div>
           )}
           {friends_count && (
             <div className="flex items-center gap-1.5 text-gray-700">
               <UserPlus className="w-4 h-4" />
-              <span className="font-medium">{friends_count}</span>
+              <span className="font-medium">{formatNumber(friends_count)}</span>
               <span className="text-gray-500">Following</span>
             </div>
           )}
           {statuses_count && (
             <div className="flex items-center gap-1.5 text-gray-700">
               <TwitterIcon className="w-4 h-4" />
-              <span className="font-medium">{statuses_count}</span>
+              <span className="font-medium">{formatNumber(statuses_count)}</span>
               <span className="text-gray-500">Tweets</span>
             </div>
           )}
