@@ -679,43 +679,46 @@ export default function CompanyResearcher() {
         </div>
       ))}
 
-      {linkedinData && <LinkedInDisplay data={linkedinData} />}
+      <div className="space-y-16">
+        {linkedinData && <LinkedInDisplay data={linkedinData} />}
 
-      {youtubeVideos.length > 0 && <YoutubeVideosDisplay videos={youtubeVideos} />}
+        {youtubeVideos.length > 0 && <YoutubeVideosDisplay videos={youtubeVideos} />}
 
-      {tiktokData && <TikTokDisplay data={tiktokData} />}
+        {tiktokData && <TikTokDisplay data={tiktokData} />}
 
-      {githubUrl && <GitHubDisplay githubUrl={githubUrl} />}
+        {githubUrl && <GitHubDisplay githubUrl={githubUrl} />}
 
-      {redditPosts.length > 0 && <RedditDisplay posts={redditPosts} />}
+        {redditPosts.length > 0 && <RedditDisplay posts={redditPosts} />}
 
-      {twitterProfileText && (
-        <>
-          <ProfileDisplay rawText={twitterProfileText.text} username={twitterProfileText.username} />
-          <RecentTweetsDisplay tweets={recentTweets} />
-        </>
-      )}
+        {twitterProfileText && (
+          <div>
+            <ProfileDisplay rawText={twitterProfileText.text} username={twitterProfileText.username} />
+            <RecentTweetsDisplay tweets={recentTweets} />
+          </div>
+        )}
 
-      {competitors.length > 0 && <CompetitorsDisplay competitors={competitors} />}
+        {competitors.length > 0 && <CompetitorsDisplay competitors={competitors} />}
 
-      {news.length > 0 && <NewsDisplay news={news} />}
+        {news.length > 0 && <NewsDisplay news={news} />}
 
-      {founders.length > 0 && <FoundersDisplay founders={founders} />}
+        {founders.length > 0 && <FoundersDisplay founders={founders} />}
 
-      {wikipediaData && <WikipediaDisplay data={wikipediaData} />}
+        {wikipediaData && <WikipediaDisplay data={wikipediaData} />}
 
-      {financialReport && <FinancialReportDisplay report={financialReport} />}
+        {financialReport && <FinancialReportDisplay report={financialReport} />}
 
-      {fundingData && <FundingDisplay fundingData={fundingData} />}
+        <div className="space-y-6 pb-8">
+        {fundingData && <FundingDisplay fundingData={fundingData} />}
 
-      {crunchbaseData && <CrunchbaseDisplay data={crunchbaseData} />}
+        {crunchbaseData && <CrunchbaseDisplay data={crunchbaseData} />}
 
-      {pitchbookData && <PitchBookDisplay data={pitchbookData} />}
+        {pitchbookData && <PitchBookDisplay data={pitchbookData} />}
 
-      {tracxnData && <TracxnDisplay data={tracxnData} />}
-
-      {companySummary && <CompanySummary summary={companySummary} />}
-
+        {tracxnData && <TracxnDisplay data={tracxnData} />}
+        </div>
+        
+        {companySummary && <CompanySummary summary={companySummary} />}
+      </div>
     </div>
   );
 }

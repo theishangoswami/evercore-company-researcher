@@ -123,10 +123,11 @@ export default function GitHubDisplay({ githubUrl }: GitHubDisplayProps) {
   }
 
   return (
+    <div className='pb-8'>
     <div className="bg-white rounded-lg shadow-lg p-6 mb-6 transition-all hover:shadow-xl mt-24">
       <div className="flex items-center gap-2 text-gray-800 mb-6">
         <FaGithub className="text-2xl" />
-        <h3 className="text-2xl font-bold">GitHub</h3>
+        <h3 className="text-xl font-semibold">GitHub</h3>
       </div>
 
       {/* Profile Header */}
@@ -164,7 +165,7 @@ export default function GitHubDisplay({ githubUrl }: GitHubDisplayProps) {
             rel="noopener noreferrer"
             className="inline-block bg-gray-800 text-white py-2 px-4 rounded-lg hover:bg-gray-700 transition-colors text-sm"
           >
-            View Full Profile
+            View Full Github Profile
           </a>
         </div>
       </div>
@@ -223,6 +224,7 @@ export default function GitHubDisplay({ githubUrl }: GitHubDisplayProps) {
           ))}
         </div>
       </div>
+    </div>
     </div>
   );
 } 

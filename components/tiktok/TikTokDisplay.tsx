@@ -15,7 +15,7 @@ export default function TikTokDisplay({ data }: TikTokDisplayProps) {
   if (!username) return null;
 
   return (
-    <div className="mt-12">
+    <div className='pb-8'>
       <a 
         href={data.url}
         target="_blank"

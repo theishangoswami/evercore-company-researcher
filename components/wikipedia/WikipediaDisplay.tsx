@@ -128,14 +128,14 @@ const WikipediaDisplay: React.FC<WikipediaDisplayProps> = ({ data }) => {
   const timeline = data.text ? extractTimeline(data.text) : [];
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-8 mb-6 transition-all duration-300 hover:shadow-lg">
+    <div className="bg-white rounded-lg shadow-md p-8 transition-all duration-300 hover:shadow-lg">
       {/* Header */}
       <div className="flex items-center gap-4 mb-8 border-b pb-4">
         <div className="bg-[#f6f6f6] p-3 rounded-full">
           <FaWikipediaW className="text-2xl text-[#666]" />
         </div>
         <div>
-          <h2 className="text-2xl font-bold">Wikipedia</h2>
+          <h2 className="text-2xl font-semibold text-gray-900">Wikipedia</h2>
           <p className="text-sm text-gray-500">From Wikipedia, the free encyclopedia</p>
         </div>
       </div>

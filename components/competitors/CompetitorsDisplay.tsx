@@ -42,11 +42,11 @@ export default function CompetitorsDisplay({ competitors }: CompetitorDisplayPro
   };
 
   return (
-    <div className="mt-24 space-y-6 opacity-0 animate-fade-up [animation-delay:200ms]">
-      <h2 className="text-2xl font-medium mb-4 ml-1">
+    <div className="opacity-0 animate-fade-up [animation-delay:200ms] pb-8">
+      <h2 className="text-2xl font-normal pb-4">
         Similar Companies
       </h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5 pt-6">
         {visibleCompetitors.map((competitor, index) => (
           <div
             key={competitor.url}

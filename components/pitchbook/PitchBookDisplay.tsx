@@ -14,7 +14,7 @@ export default function PitchBookDisplay({ data }: PitchBookDisplayProps) {
   const orgName = data.title.split(' Company Profile')[0];
 
   return (
-    <div className="mt-8">
+    <div>
       <a 
         href={data.url}
         target="_blank"
