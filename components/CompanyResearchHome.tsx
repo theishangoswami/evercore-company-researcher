@@ -19,20 +19,84 @@ import CrunchbaseDisplay from './crunchbase/CrunchbaseDisplay';
 import PitchBookDisplay from './pitchbook/PitchBookDisplay';
 import TracxnDisplay from "./tracxn/TracxnDisplay";
 import FoundersDisplay from "./founders/FoundersDisplay";
+import {
+  LinkedInSkeleton,
+  YouTubeSkeleton,
+  TikTokSkeleton,
+  GitHubSkeleton,
+  RedditSkeleton,
+  TwitterSkeleton,
+  CompetitorsSkeleton,
+  NewsSkeleton,
+  FoundersSkeleton,
+  WikipediaSkeleton,
+  FinancialSkeleton,
+  FundingSkeleton,
+  CompanySummarySkeleton,
+} from "./skeletons/ResearchSkeletons";
 
+interface LinkedInData {
+  text: string;
+  url: string;
+  image: string;
+  title: string;
+  [key: string]: any;
+}
+
+interface Video {
+  id: string;
+  url: string;
+  title: string;
+  author: string;
+  [key: string]: any;
+}
+
+interface RedditPost {
+  url: string;
+  title: string;
+  [key: string]: any;
+}
+
+interface Tweet {
+  id: string;
+  url: string;
+  title: string;
+  author: string;
+  [key: string]: any;
+}
+
+interface Competitor {
+  title: string;
+  url: string;
+  summary: string;
+  [key: string]: any;
+}
+
+interface NewsItem {
+  url: string;
+  title: string;
+  image: string;
+  [key: string]: any;
+}
+
+interface Founder {
+  url: string;
+  title: string;
+  [key: string]: any;
+}
 
 export default function CompanyResearcher() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [companyUrl, setCompanyUrl] = useState('');
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [linkedinData, setLinkedinData] = useState<any>(null);
-  const [competitors, setCompetitors] = useState<any>([]);
-  const [news, setNews] = useState<any[]>([]);
+  const [linkedinData, setLinkedinData] = useState<LinkedInData | null>(null);
+  const [competitors, setCompetitors] = useState<Competitor[] | null>(null);
+  const [news, setNews] = useState<NewsItem[] | null>(null);
   const [companySummary, setCompanySummary] = useState<any>(null);
   const [twitterProfileText, setTwitterProfileText] = useState<any>(null);
-  const [recentTweets, setRecentTweets] = useState<any[]>([]);
-  const [youtubeVideos, setYoutubeVideos] = useState<any[]>([]);
-  const [redditPosts, setRedditPosts] = useState<any[]>([]);
+  const [recentTweets, setRecentTweets] = useState<Tweet[] | null>(null);
+  const [youtubeVideos, setYoutubeVideos] = useState<Video[] | null>(null);
+  const [redditPosts, setRedditPosts] = useState<RedditPost[] | null>(null);
   const [githubUrl, setGithubUrl] = useState<string | null>(null);
   const [fundingData, setFundingData] = useState<any>(null);
   const [financialReport, setFinancialReport] = useState<any>(null);
@@ -41,7 +105,7 @@ export default function CompanyResearcher() {
   const [crunchbaseData, setCrunchbaseData] = useState<any>(null);
   const [pitchbookData, setPitchbookData] = useState<any>(null);
   const [tracxnData, setTracxnData] = useState<any>(null);
-  const [founders, setFounders] = useState<any[]>([]);
+  const [founders, setFounders] = useState<Founder[] | null>(null);
 
   // Function to validate and extract domain name from URL
   const extractDomain = (url: string): string | null => {
@@ -556,6 +620,25 @@ export default function CompanyResearcher() {
     setIsGenerating(true);
     setErrors({});
 
+    // Reset all states to null
+    setLinkedinData(null);
+    setCompetitors(null);
+    setNews(null);
+    setCompanySummary(null);
+    setTwitterProfileText(null);
+    setRecentTweets(null);
+    setYoutubeVideos(null);
+    setRedditPosts(null);
+    setGithubUrl(null);
+    setFundingData(null);
+    setFinancialReport(null);
+    setTiktokData(null);
+    setWikipediaData(null);
+    setCrunchbaseData(null);
+    setPitchbookData(null);
+    setTracxnData(null);
+    setFounders(null);
+
     try {
       const linkedinPromise = fetchLinkedInData(domainName)
         .then((data) => setLinkedinData(data))
@@ -680,44 +763,109 @@ export default function CompanyResearcher() {
       ))}
 
       <div className="space-y-16">
-        {linkedinData && <LinkedInDisplay data={linkedinData} />}
+        <div className="space-y-16">
+          {isGenerating && linkedinData === null ? (
+            <LinkedInSkeleton />
+          ) : linkedinData && (
+            <LinkedInDisplay data={linkedinData} />
+          )}
 
-        {youtubeVideos.length > 0 && <YoutubeVideosDisplay videos={youtubeVideos} />}
+          {isGenerating && youtubeVideos === null ? (
+            <YouTubeSkeleton />
+          ) : youtubeVideos && youtubeVideos.length > 0 && (
+            <YoutubeVideosDisplay videos={youtubeVideos} />
+          )}
 
-        {tiktokData && <TikTokDisplay data={tiktokData} />}
+          {isGenerating && tiktokData === null ? (
+            <TikTokSkeleton />
+          ) : tiktokData && (
+            <TikTokDisplay data={tiktokData} />
+          )}
 
-        {githubUrl && <GitHubDisplay githubUrl={githubUrl} />}
+          {isGenerating && githubUrl === null ? (
+            <GitHubSkeleton />
+          ) : githubUrl && (
+            <GitHubDisplay githubUrl={githubUrl} />
+          )}
 
-        {redditPosts.length > 0 && <RedditDisplay posts={redditPosts} />}
+          {isGenerating && redditPosts === null ? (
+            <RedditSkeleton />
+          ) : redditPosts && redditPosts.length > 0 && (
+            <RedditDisplay posts={redditPosts} />
+          )}
 
-        {twitterProfileText && (
-          <div>
-            <ProfileDisplay rawText={twitterProfileText.text} username={twitterProfileText.username} />
-            <RecentTweetsDisplay tweets={recentTweets} />
+          {isGenerating && twitterProfileText === null ? (
+            <TwitterSkeleton />
+          ) : twitterProfileText && (
+            <div>
+              <ProfileDisplay rawText={twitterProfileText.text} username={twitterProfileText.username} />
+              {recentTweets && <RecentTweetsDisplay tweets={recentTweets} />}
+            </div>
+          )}
+
+          {isGenerating && competitors === null ? (
+            <CompetitorsSkeleton />
+          ) : competitors && competitors.length > 0 && (
+            <CompetitorsDisplay competitors={competitors} />
+          )}
+
+          {isGenerating && news === null ? (
+            <NewsSkeleton />
+          ) : news && news.length > 0 && (
+            <NewsDisplay news={news} />
+          )}
+
+          {isGenerating && founders === null ? (
+            <FoundersSkeleton />
+          ) : founders && founders.length > 0 && (
+            <FoundersDisplay founders={founders} />
+          )}
+
+          {isGenerating && wikipediaData === null ? (
+            <WikipediaSkeleton />
+          ) : wikipediaData && (
+            <WikipediaDisplay data={wikipediaData} />
+          )}
+
+          {isGenerating && financialReport === null ? (
+            <FinancialSkeleton />
+          ) : financialReport && (
+            <FinancialReportDisplay report={financialReport} />
+          )}
+
+          <div className="space-y-6 pb-8">
+            
+            {isGenerating && fundingData === null ? (
+              <FundingSkeleton />
+            ) : fundingData && (
+              <FundingDisplay fundingData={fundingData} />
+            )}
+
+            {isGenerating && crunchbaseData === null ? (
+              <FundingSkeleton />
+            ) : crunchbaseData && (
+              <CrunchbaseDisplay data={crunchbaseData} />
+            )}
+
+            {isGenerating && pitchbookData === null ? (
+              <FundingSkeleton />
+            ) : pitchbookData && (
+              <PitchBookDisplay data={pitchbookData} />
+            )}
+
+            {isGenerating && tracxnData === null ? (
+              <FundingSkeleton />
+            ) : tracxnData && (
+              <TracxnDisplay data={tracxnData} />
+            )}
           </div>
-        )}
 
-        {competitors.length > 0 && <CompetitorsDisplay competitors={competitors} />}
-
-        {news.length > 0 && <NewsDisplay news={news} />}
-
-        {founders.length > 0 && <FoundersDisplay founders={founders} />}
-
-        {wikipediaData && <WikipediaDisplay data={wikipediaData} />}
-
-        {financialReport && <FinancialReportDisplay report={financialReport} />}
-
-        <div className="space-y-6 pb-8">
-        {fundingData && <FundingDisplay fundingData={fundingData} />}
-
-        {crunchbaseData && <CrunchbaseDisplay data={crunchbaseData} />}
-
-        {pitchbookData && <PitchBookDisplay data={pitchbookData} />}
-
-        {tracxnData && <TracxnDisplay data={tracxnData} />}
+          {isGenerating && companySummary === null ? (
+            <CompanySummarySkeleton />
+          ) : companySummary && (
+            <CompanySummary summary={companySummary} />
+          )}
         </div>
-        
-        {companySummary && <CompanySummary summary={companySummary} />}
       </div>
     </div>
   );
