@@ -30,7 +30,7 @@ export default function FinancialReportDisplay({ report }: FinancialReportDispla
 
   return (
     <div className="mt-24">
-      <h2 className="text-2xl font-medium mb-4 ml-1">Company 10K Financials</h2>
+      <h2 className="text-2xl font-normal mb-6">Company 10K Financials</h2>
 
       <div className="w-full overflow-x-auto py-6">
         <motion.div
@@ -57,7 +57,7 @@ export default function FinancialReportDisplay({ report }: FinancialReportDispla
                     <div className="p-2 bg-blue-50 rounded-lg group-hover:bg-blue-100 transition-colors">
                       <FileText className="w-5 h-5 text-blue-600" />
                     </div>
-                    <span className="text-sm font-medium text-gray-600">
+                    <span className="text-sm font-normal text-gray-600">
                       SEC Filing
                     </span>
                   </div>
@@ -65,7 +65,7 @@ export default function FinancialReportDisplay({ report }: FinancialReportDispla
                 </div>
 
                 {/* Title */}
-                <h3 className="text-lg font-semibold text-gray-900 transition-colors mb-2">
+                <h3 className="text-xl font-normal transition-colors mb-2">
                   {cleanTitle(item.title)}
                 </h3>
               </div>

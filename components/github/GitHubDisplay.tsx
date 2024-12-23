@@ -141,7 +141,7 @@ export default function GitHubDisplay({ githubUrl }: GitHubDisplayProps) {
         </div>
         <div className="flex-grow">
           <div className="flex flex-col md:flex-row md:items-center gap-2 mb-2">
-            <h2 className="text-xl font-bold">{profile.name}</h2>
+            <p className="text-xl">{profile.name}</p>
             <span className="text-gray-600">@{profile.login}</span>
           </div>
           <p className="text-gray-700 mb-4">{profile.bio}</p>

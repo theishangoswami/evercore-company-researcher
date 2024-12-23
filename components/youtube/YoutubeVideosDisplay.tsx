@@ -135,9 +135,9 @@ export default function YoutubeVideosDisplay({ videos }: YoutubeVideosDisplayPro
                 </div>
                 
                 <div className="p-4 space-y-2">
-                  <h3 className="text-base font-medium line-clamp-2 text-gray-900 transition-colors duration-300">
+                  <p className="text-base font-medium line-clamp-2 text-gray-900 transition-colors duration-300">
                     {details?.title || video.title}
-                  </h3>
+                  </p>
                   {details && (
                     <>
                       <p className="text-sm text-gray-600 font-medium">

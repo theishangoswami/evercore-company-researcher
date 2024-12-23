@@ -47,9 +47,9 @@ export default function RedditDisplay({ posts }: RedditDisplayProps) {
                   </div>
                   <span className="text-sm font-medium text-gray-600">r/{extractSubreddit(post.url)}</span>
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 line-clamp-3">
+                <p className="text-lg line-clamp-3">
                   {post.title}
-                </h3>
+                </p>
               </div>
             </motion.a>
           ))}

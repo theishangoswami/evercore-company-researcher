@@ -72,9 +72,9 @@ const NewsDisplay: React.FC<NewsDisplayProps> = ({ news }) => {
                 )}
               </div>
               <div className="p-5">
-                <h3 className="font-semibold text-normal line-clamp-2 mb-2 text-gray-900">
+                <p className="text-normal line-clamp-2 mb-2">
                   {item.title}
-                </h3>
+                </p>
                 <div className="text-sm text-gray-500 transition-colors">
                   {extractDomain(item.url)}
                 </div>
