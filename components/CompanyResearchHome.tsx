@@ -950,11 +950,13 @@ export default function CompanyResearcher() {
 
           {isGenerating && companyMap === null ? (
             <div className="animate-pulse">
-              <div className="h-64 bg-gray-200 rounded-lg"></div>
+              <div className="h-64 bg-secondary-darkest rounded-lg flex items-center justify-center">
+                <p className="text-gray-400 text-md">Loading...</p>
+              </div>
             </div>
           ) : companyMap && (
             <div className="opacity-0 animate-fade-up [animation-delay:200ms]">
-              <h2 className="text-2xl font-normal mb-6">Company Mind Map</h2>
+              <h2 className="text-2xl font-normal pb-6">Company Mind Map</h2>
               <CompanyMindMap data={companyMap} />
             </div>
           )}
