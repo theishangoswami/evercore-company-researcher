@@ -20,7 +20,7 @@ export default function RedditDisplay({ posts }: RedditDisplayProps) {
 
   return (
     <div className='pb-2'>
-      <h2 className="text-2xl font-normal mb-6">Reddit Discussions</h2>
+      <h2 className="text-2xl font-normal mb-6">Company Mentions on Reddit</h2>
       
       <div className="w-full overflow-x-auto py-6">
         <motion.div
