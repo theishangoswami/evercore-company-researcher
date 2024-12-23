@@ -820,37 +820,47 @@ export default function CompanyResearcher() {
           {isGenerating && linkedinData === null ? (
             <LinkedInSkeleton />
           ) : linkedinData && (
-            <LinkedInDisplay data={linkedinData} />
+            <div className="opacity-0 animate-fade-up [animation-delay:200ms]">
+              <LinkedInDisplay data={linkedinData} />
+            </div>
           )}
 
           {isGenerating && youtubeVideos === null ? (
             <YouTubeSkeleton />
           ) : youtubeVideos && youtubeVideos.length > 0 && (
-            <YoutubeVideosDisplay videos={youtubeVideos} />
+            <div className="opacity-0 animate-fade-up [animation-delay:200ms]">
+              <YoutubeVideosDisplay videos={youtubeVideos} />
+            </div>
           )}
 
           {isGenerating && tiktokData === null ? (
             <TikTokSkeleton />
           ) : tiktokData && (
-            <TikTokDisplay data={tiktokData} />
+            <div className="opacity-0 animate-fade-up [animation-delay:200ms]">
+              <TikTokDisplay data={tiktokData} />
+            </div>
           )}
 
           {isGenerating && githubUrl === null ? (
             <GitHubSkeleton />
           ) : githubUrl && (
-            <GitHubDisplay githubUrl={githubUrl} />
+            <div className="opacity-0 animate-fade-up [animation-delay:200ms]">
+              <GitHubDisplay githubUrl={githubUrl} />
+            </div>
           )}
 
           {isGenerating && redditPosts === null ? (
             <RedditSkeleton />
           ) : redditPosts && redditPosts.length > 0 && (
-            <RedditDisplay posts={redditPosts} />
+            <div className="opacity-0 animate-fade-up [animation-delay:200ms]">
+              <RedditDisplay posts={redditPosts} />
+            </div>
           )}
 
           {isGenerating && twitterProfileText === null ? (
             <TwitterSkeleton />
           ) : twitterProfileText && (
-            <div>
+            <div className="opacity-0 animate-fade-up [animation-delay:200ms]">
               <ProfileDisplay rawText={twitterProfileText.text} username={twitterProfileText.username} />
               {recentTweets && <RecentTweetsDisplay tweets={recentTweets} />}
             </div>
@@ -859,64 +869,83 @@ export default function CompanyResearcher() {
           {isGenerating && competitors === null ? (
             <CompetitorsSkeleton />
           ) : competitors && competitors.length > 0 && (
-            <CompetitorsDisplay competitors={competitors} />
+            <div className="opacity-0 animate-fade-up [animation-delay:200ms]">
+              <CompetitorsDisplay competitors={competitors} />
+            </div>
           )}
 
           {isGenerating && news === null ? (
             <NewsSkeleton />
           ) : news && news.length > 0 && (
-            <NewsDisplay news={news} />
+            <div className="opacity-0 animate-fade-up [animation-delay:200ms]">
+              <NewsDisplay news={news} />
+            </div>
           )}
 
           {isGenerating && founders === null ? (
             <FoundersSkeleton />
           ) : founders && founders.length > 0 && (
-            <FoundersDisplay founders={founders} />
+            <div className="opacity-0 animate-fade-up [animation-delay:200ms]">
+              <FoundersDisplay founders={founders} />
+            </div>
           )}
 
           {isGenerating && wikipediaData === null ? (
             <WikipediaSkeleton />
           ) : wikipediaData && (
-            <WikipediaDisplay data={wikipediaData} />
+            <div className="opacity-0 animate-fade-up [animation-delay:200ms]">
+              <WikipediaDisplay data={wikipediaData} />
+            </div>
           )}
 
           {isGenerating && financialReport === null ? (
             <FinancialSkeleton />
           ) : financialReport && (
-            <FinancialReportDisplay report={financialReport} />
+            <div className="opacity-0 animate-fade-up [animation-delay:200ms]">
+              <FinancialReportDisplay report={financialReport} />
+            </div>
           )}
 
           <div className="space-y-6 pb-8">
-            
             {isGenerating && fundingData === null ? (
               <FundingSkeleton />
             ) : fundingData && (
-              <FundingDisplay fundingData={fundingData} />
+              <div className="opacity-0 animate-fade-up [animation-delay:200ms]">
+                <FundingDisplay fundingData={fundingData} />
+              </div>
             )}
 
             {isGenerating && crunchbaseData === null ? (
               <FundingSkeleton />
             ) : crunchbaseData && (
-              <CrunchbaseDisplay data={crunchbaseData} />
+              <div className="opacity-0 animate-fade-up [animation-delay:200ms]">
+                <CrunchbaseDisplay data={crunchbaseData} />
+              </div>
             )}
 
             {isGenerating && pitchbookData === null ? (
               <FundingSkeleton />
             ) : pitchbookData && (
-              <PitchBookDisplay data={pitchbookData} />
+              <div className="opacity-0 animate-fade-up [animation-delay:200ms]">
+                <PitchBookDisplay data={pitchbookData} />
+              </div>
             )}
 
             {isGenerating && tracxnData === null ? (
               <FundingSkeleton />
             ) : tracxnData && (
-              <TracxnDisplay data={tracxnData} />
+              <div className="opacity-0 animate-fade-up [animation-delay:200ms]">
+                <TracxnDisplay data={tracxnData} />
+              </div>
             )}
           </div>
 
           {isGenerating && companySummary === null ? (
             <CompanySummarySkeleton />
           ) : companySummary && (
-            <CompanySummary summary={companySummary} />
+            <div className="opacity-0 animate-fade-up [animation-delay:200ms]">
+              <CompanySummary summary={companySummary} />
+            </div>
           )}
 
           {isGenerating && companyMap === null ? (
@@ -924,7 +953,7 @@ export default function CompanyResearcher() {
               <div className="h-64 bg-gray-200 rounded-lg"></div>
             </div>
           ) : companyMap && (
-            <div>
+            <div className="opacity-0 animate-fade-up [animation-delay:200ms]">
               <h2 className="text-2xl font-normal mb-6">Company Mind Map</h2>
               <CompanyMindMap data={companyMap} />
             </div>

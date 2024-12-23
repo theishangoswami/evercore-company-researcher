@@ -10,7 +10,7 @@ interface FundingDisplayProps {
 
 export default function FundingDisplay({ fundingData }: FundingDisplayProps) {
   return (
-    <div className="w-full opacity-0 animate-fade-up">
+    <div className="w-full">
     <h2 className="text-2xl font-normal mb-8">Funding</h2>
       <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
         <div className="prose max-w-none mb-4">

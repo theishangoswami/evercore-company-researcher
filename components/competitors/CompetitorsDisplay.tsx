@@ -34,24 +34,16 @@ export default function CompetitorsDisplay({ competitors }: CompetitorDisplayPro
 
   const hasMore = competitors.length > INITIAL_DISPLAY_COUNT;
 
-  // Helper function to calculate animation delay
-  const getAnimationDelay = (index: number) => {
-    // If index is greater than INITIAL_DISPLAY_COUNT, reset to 1-4 sequence
-    const adjustedIndex = (index % INITIAL_DISPLAY_COUNT) + 1;
-    return `${adjustedIndex * 200}ms`;
-  };
-
   return (
-    <div className="opacity-0 animate-fade-up [animation-delay:200ms] pb-8">
+    <div className="pb-8">
       <h2 className="text-2xl font-normal pb-4">
         Similar Companies
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5 pt-6">
-        {visibleCompetitors.map((competitor, index) => (
+        {visibleCompetitors.map((competitor) => (
           <div
             key={competitor.url}
-            className="bg-white p-6 border rounded-lg hover:ring-brand-default hover:ring-1 transition-all duration-200 opacity-0 animate-fade-up"
-            style={{ animationDelay: getAnimationDelay(index) }}
+            className="bg-white p-6 border rounded-lg hover:ring-brand-default hover:ring-1 transition-all duration-200"
           >
             <a
               href={competitor.url}

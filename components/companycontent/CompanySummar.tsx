@@ -14,7 +14,7 @@ const CompanySummary: React.FC<CompanySummaryProps> = ({ summary }) => {
     <div className="w-full space-y-6">
       <h2 className="text-2xl font-normal pb-4">Company Overview</h2>
       
-      <div className="bg-white border shadow-sm p-8 opacity-0 animate-fade-up [animation-delay:800ms] mt-6">
+      <div className="bg-white border shadow-sm p-8 mt-6">
         <div className="space-y-8">
           {summary.map((item, index) => (
             <div key={index} className="space-y-3">
