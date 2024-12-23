@@ -34,6 +34,7 @@ import {
   FundingSkeleton,
   CompanySummarySkeleton,
 } from "./skeletons/ResearchSkeletons";
+import CompanyMindMap from './mindmap/CompanyMindMap';
 
 interface LinkedInData {
   text: string;
@@ -85,6 +86,22 @@ interface Founder {
   [key: string]: any;
 }
 
+// Add new interface for company map data
+interface CompanyMapData {
+  companyName: string;
+  rootNode: {
+    title: string;
+    children: Array<{
+      title: string;
+      description: string;
+      children: Array<{
+        title: string;
+        description: string;
+      }>;
+    }>;
+  };
+}
+
 export default function CompanyResearcher() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [companyUrl, setCompanyUrl] = useState('');
@@ -106,6 +123,7 @@ export default function CompanyResearcher() {
   const [pitchbookData, setPitchbookData] = useState<any>(null);
   const [tracxnData, setTracxnData] = useState<any>(null);
   const [founders, setFounders] = useState<Founder[] | null>(null);
+  const [companyMap, setCompanyMap] = useState<CompanyMapData | null>(null);
 
   // Function to validate and extract domain name from URL
   const extractDomain = (url: string): string | null => {
@@ -200,7 +218,60 @@ export default function CompanyResearcher() {
     }
   };
 
-  // Function to fetch subpages, main page data, and then pass both to the companysummary API
+  // Separate function for fetching company summary
+  const fetchCompanySummary = async (subpages: any, mainpage: any, websiteurl: string) => {
+    try {
+      const response = await fetch('/api/companysummary', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          subpages,
+          mainpage,
+          websiteurl
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch company summary');
+      }
+
+      const data = await response.json();
+      setCompanySummary(data.result);
+    } catch (error) {
+      console.error('Error fetching company summary:', error);
+      setErrors(prev => ({ ...prev, summary: error instanceof Error ? error.message : 'An error occurred with company summary' }));
+    }
+  };
+
+  // New function for fetching company map
+  const fetchCompanyMap = async (mainpage: any, websiteurl: string) => {
+    try {
+      const response = await fetch('/api/companymap', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          mainpage,
+          websiteurl
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch company map');
+      }
+
+      const data = await response.json();
+      setCompanyMap(data.result);
+    } catch (error) {
+      console.error('Error fetching company map:', error);
+      setErrors(prev => ({ ...prev, map: error instanceof Error ? error.message : 'An error occurred with company map' }));
+    }
+  };
+
+  // Update fetchWebsiteData to handle both API calls independently
   const fetchWebsiteData = async (url: string) => {
     try {
       // Step 1: Fetch data from subpages and main page in parallel
@@ -233,28 +304,10 @@ export default function CompanyResearcher() {
       const subpagesData = await subpagesResponse.json();
       const mainPageData = await mainPageResponse.json();
 
-      console.log(subpagesData.results);
-      console.log(mainPageData.results);
+      // Trigger both API calls independently
+      fetchCompanySummary(subpagesData.results, mainPageData.results, url);
+      fetchCompanyMap(mainPageData.results, url);
 
-      // Pass the parsed data to the companysummary API
-      const companySummaryResponse = await fetch('/api/companysummary', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          subpages: subpagesData.results,
-          mainpage: mainPageData.results,
-          websiteurl: url
-        }),
-      });
-
-      const companySummaryData = await companySummaryResponse.json();
-
-      // Return the final summarized data
-      return {
-        companySummary: companySummaryData.result,
-      };
     } catch (error) {
       console.error('Error fetching website data:', error);
       throw error;
@@ -638,6 +691,7 @@ export default function CompanyResearcher() {
     setPitchbookData(null);
     setTracxnData(null);
     setFounders(null);
+    setCompanyMap(null);
 
     try {
       const linkedinPromise = fetchLinkedInData(domainName)
@@ -653,8 +707,7 @@ export default function CompanyResearcher() {
         .catch((error) => setErrors(prev => ({ ...prev, news: error instanceof Error ? error.message : 'An error occurred with news' })));
         
       const websiteDataPromise = fetchWebsiteData(domainName)
-        .then((data) => setCompanySummary(data.companySummary))
-        .catch((error) => setErrors(prev => ({ ...prev, summary: error instanceof Error ? error.message : 'An error occurred with company summary' })));
+        .catch((error) => setErrors(prev => ({ ...prev, websiteData: error instanceof Error ? error.message : 'An error occurred with website data' })));
 
       const twitterPromise = fetchTwitterProfile(domainName)
         .then((data) => setTwitterProfileText(data))
@@ -865,6 +918,18 @@ export default function CompanyResearcher() {
           ) : companySummary && (
             <CompanySummary summary={companySummary} />
           )}
+
+          {isGenerating && companyMap === null ? (
+            <div className="animate-pulse">
+              <div className="h-64 bg-gray-200 rounded-lg"></div>
+            </div>
+          ) : companyMap && (
+            <div>
+              <h2 className="text-2xl font-normal mb-6">Company Mind Map</h2>
+              <CompanyMindMap data={companyMap} />
+            </div>
+          )}
+          
         </div>
       </div>
     </div>

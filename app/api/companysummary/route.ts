@@ -1,3 +1,4 @@
+// /app/api/companysummary/route.ts 
 import { NextRequest, NextResponse } from 'next/server';
 import { anthropic } from "@ai-sdk/anthropic";
 import { generateObject } from 'ai';
@@ -45,7 +46,7 @@ export async function POST(req: NextRequest) {
       Don't make up any information yourself, only use the information which is given in the above content.
 
       It should be (an emoji with heading) and then text with it. Give maximum 6 headings (the most important ones).
-      
+
       All the output content should be in simple english. Don't use any difficult words.
       
       Output the result as valid JSON.`

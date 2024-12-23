@@ -17,6 +17,7 @@
     "lucide-react": "^0.460.0",
     "next": "14.2.17",
     "react": "^18",
+    "react-d3-tree": "^3.6.2",
     "react-dom": "^18",
     "react-icons": "^4.12.0",
     "react-tweet": "^3.2.1",
