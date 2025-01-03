@@ -817,13 +817,15 @@ export default function CompanyResearcher() {
 
       <div className="space-y-12">
         {/* Company Overview Section */}
-        {(linkedinData || companySummary || founders || financialReport || 
+        
+          <div className="space-y-16">
+          {(linkedinData || companySummary || founders || financialReport || 
           fundingData || crunchbaseData || pitchbookData || tracxnData || 
           wikipediaData) && (
-          <div className="space-y-16">
             <div className="flex items-center">
               <h2 className="text-4xl font-medium">Company Overview</h2>
             </div>
+            )}
 
             {isGenerating && linkedinData === null ? (
               <LinkedInSkeleton />
@@ -915,15 +917,17 @@ export default function CompanyResearcher() {
               </div>
             )}
           </div>
-        )}
+      
 
         {/* Company Socials Section */}
-        {(twitterProfileText || youtubeVideos || tiktokData || 
-          redditPosts || githubUrl) && (
           <div className="space-y-16">
+
+          {(twitterProfileText || youtubeVideos || tiktokData || 
+          redditPosts || githubUrl) && (
             <div className="flex items-center">
               <h2 className="text-4xl font-medium">Company Socials</h2>
             </div>
+            )}
 
             {isGenerating && twitterProfileText === null ? (
               <TwitterSkeleton />
@@ -966,27 +970,31 @@ export default function CompanyResearcher() {
               </div>
             )}
           </div>
-        )}
+        
 
         {/* Company Mind Map Section */}
-        {companyMap && (
-          <div className="space-y-8">
-            <div className="flex items-center">
-              <h2 className="text-4xl font-medium">Company Mind Map</h2>
-            </div>
-
+   
             {isGenerating && companyMap === null ? (
+              <div className="space-y-8">
+                <div className="flex items-center">
+                  <h2 className="text-4xl font-medium">Company Mind Map</h2>
+                </div>
               <div className="animate-pulse">
                 <div className="h-64 bg-secondary-darkest rounded-lg flex items-center justify-center">
                   <p className="text-gray-400 text-md">Loading...</p>
                 </div>
               </div>
+            </div>
             ) : companyMap && (
+              <div className="space-y-8">
+                <div className="flex items-center">
+                  <h2 className="text-4xl font-medium">Company Mind Map</h2>
+                </div>
               <div className="opacity-0 animate-fade-up [animation-delay:200ms]">
                 <CompanyMindMap data={companyMap} />
               </div>
-            )}
-          </div>
+            </div>
+
         )}
       </div>
     </div>  
