@@ -94,7 +94,7 @@ export default function YoutubeVideosDisplay({ videos }: YoutubeVideosDisplayPro
   };
 
   return (
-    <div className="w-full pt-8">
+    <div className="w-full">
       <h2 className="text-2xl font-normal mb-6">YouTube Videos</h2>
 
       <div className="w-full overflow-x-auto py-6">

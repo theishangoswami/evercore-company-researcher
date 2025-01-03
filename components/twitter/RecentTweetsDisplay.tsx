@@ -27,7 +27,7 @@ export default function RecentTweetsDisplay({ tweets }: RecentTweetsDisplayProps
   if (validTweets.length === 0) return null;
 
   return (
-    <div className="w-full pb-8">
+    <div className="w-full">
       <div className="w-full overflow-x-auto py-6">
         <motion.div
           className="flex space-x-6 pb-6"

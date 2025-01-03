@@ -822,14 +822,6 @@ export default function CompanyResearcher() {
               </div>
             )}
 
-            {isGenerating && companySummary === null ? (
-              <CompanySummarySkeleton />
-            ) : companySummary && (
-              <div className="opacity-0 animate-fade-up [animation-delay:200ms]">
-                <CompanySummary summary={companySummary} />
-              </div>
-            )}
-
             {isGenerating && founders === null ? (
               <FoundersSkeleton />
             ) : founders && founders.length > 0 && (
@@ -880,6 +872,14 @@ export default function CompanyResearcher() {
               )}
             </div>
 
+            {isGenerating && companySummary === null ? (
+              <CompanySummarySkeleton />
+            ) : companySummary && (
+              <div className="opacity-0 animate-fade-up [animation-delay:200ms]">
+                <CompanySummary summary={companySummary} />
+              </div>
+            )}
+
             {isGenerating && wikipediaData === null ? (
               <WikipediaSkeleton />
             ) : wikipediaData && (
@@ -907,7 +907,7 @@ export default function CompanyResearcher() {
       
 
         {/* Company Socials Section */}
-          <div className="space-y-16">
+          <div className="space-y-16 pt-12">
 
           {(twitterProfileText || youtubeVideos || tiktokData || 
           redditPosts || githubUrl) && (
@@ -933,19 +933,19 @@ export default function CompanyResearcher() {
               </div>
             )}
 
-            {isGenerating && tiktokData === null ? (
-              <TikTokSkeleton />
-            ) : tiktokData && (
-              <div className="opacity-0 animate-fade-up [animation-delay:200ms]">
-                <TikTokDisplay data={tiktokData} />
-              </div>
-            )}
-
             {isGenerating && redditPosts === null ? (
               <RedditSkeleton />
             ) : redditPosts && redditPosts.length > 0 && (
               <div className="opacity-0 animate-fade-up [animation-delay:200ms]">
                 <RedditDisplay posts={redditPosts} />
+              </div>
+            )}
+
+            {isGenerating && tiktokData === null ? (
+              <TikTokSkeleton />
+            ) : tiktokData && (
+              <div className="opacity-0 animate-fade-up [animation-delay:200ms]">
+                <TikTokDisplay data={tiktokData} />
               </div>
             )}
 
@@ -973,7 +973,7 @@ export default function CompanyResearcher() {
               </div>
             </div>
             ) : companyMap && (
-              <div className="space-y-8">
+              <div className="space-y-8 pt-16 pb-2">
                 <div className="flex items-center">
                   <h2 className="text-4xl font-medium">Company Mind Map</h2>
                 </div>

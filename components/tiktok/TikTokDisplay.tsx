@@ -15,15 +15,16 @@ export default function TikTokDisplay({ data }: TikTokDisplayProps) {
   if (!username) return null;
 
   return (
-    <div className='pb-8'>
+    <div>
       <a 
         href={data.url}
         target="_blank"
         rel="noopener noreferrer"
         className="block"
       >
-        <div className="bg-white p-6 rounded-lg border hover:shadow-md transition-all duration-200">
+        <div className="bg-white p-6 rounded-none border hover:shadow-md transition-all duration-200">
           <div className="flex items-center gap-4">
+            
             {/* TikTok Icon */}
             <div className="p-3 bg-gray-50 rounded-full">
               <svg 

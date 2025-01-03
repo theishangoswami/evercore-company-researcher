@@ -19,12 +19,12 @@ export default function RedditDisplay({ posts }: RedditDisplayProps) {
   };
 
   return (
-    <div className='pb-2'>
+    <div>
       <h2 className="text-2xl font-normal mb-6">Company Mentions on Reddit</h2>
       
       <div className="w-full overflow-x-auto py-6">
         <motion.div
-          className="flex space-x-6 pb-6"
+          className="flex space-x-6"
           drag="x"
           dragConstraints={{ left: -((posts.length * 400) - window.innerWidth), right: 0 }}
           dragElastic={0.3}

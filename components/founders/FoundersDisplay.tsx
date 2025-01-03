@@ -11,7 +11,7 @@ interface FoundersDisplayProps {
 
 export default function FoundersDisplay({ founders }: FoundersDisplayProps) {
   return (
-    <div className="pb-8">
+    <div>
       <h3 className="text-2xl font-normal pb-4">
         Founders
       </h3>

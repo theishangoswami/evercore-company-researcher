@@ -35,7 +35,7 @@ export default function CompetitorsDisplay({ competitors }: CompetitorDisplayPro
   const hasMore = competitors.length > INITIAL_DISPLAY_COUNT;
 
   return (
-    <div className="pb-8">
+    <div>
       <h2 className="text-2xl font-normal pb-4">
         Similar Companies
       </h2>
