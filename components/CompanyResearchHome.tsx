@@ -305,8 +305,10 @@ export default function CompanyResearcher() {
       const mainPageData = await mainPageResponse.json();
 
       // Trigger both API calls independently
-      fetchCompanySummary(subpagesData.results, mainPageData.results, url);
-      fetchCompanyMap(mainPageData.results, url);
+      await Promise.all([
+        fetchCompanySummary(subpagesData.results, mainPageData.results, url),
+        fetchCompanyMap(mainPageData.results, url)
+      ]);
 
     } catch (error) {
       console.error('Error fetching website data:', error);
@@ -694,87 +696,72 @@ export default function CompanyResearcher() {
     setCompanyMap(null);
 
     try {
-      const linkedinPromise = fetchLinkedInData(domainName)
-        .then((data) => setLinkedinData(data))
-        .catch((error) => setErrors(prev => ({ ...prev, linkedin: error instanceof Error ? error.message : 'An error occurred with LinkedIn' })));
+      const promises = [
+        fetchLinkedInData(domainName)
+          .then((data) => setLinkedinData(data))
+          .catch((error) => setErrors(prev => ({ ...prev, linkedin: error instanceof Error ? error.message : 'An error occurred with LinkedIn' }))),
 
-      const competitorsPromise = fetchCompetitors(domainName)
-        .then((data) => setCompetitors(data))
-        .catch((error) => setErrors(prev => ({ ...prev, competitors: error instanceof Error ? error.message : 'An error occurred with competitors' })));
+        fetchCompetitors(domainName)
+          .then((data) => setCompetitors(data))
+          .catch((error) => setErrors(prev => ({ ...prev, competitors: error instanceof Error ? error.message : 'An error occurred with competitors' }))),
 
-      const newsPromise = fetchNews(domainName)
-        .then((data) => setNews(data))
-        .catch((error) => setErrors(prev => ({ ...prev, news: error instanceof Error ? error.message : 'An error occurred with news' })));
+        fetchNews(domainName)
+          .then((data) => setNews(data))
+          .catch((error) => setErrors(prev => ({ ...prev, news: error instanceof Error ? error.message : 'An error occurred with news' }))),
         
-      const websiteDataPromise = fetchWebsiteData(domainName)
-        .catch((error) => setErrors(prev => ({ ...prev, websiteData: error instanceof Error ? error.message : 'An error occurred with website data' })));
+        fetchWebsiteData(domainName)
+          .catch((error) => setErrors(prev => ({ ...prev, websiteData: error instanceof Error ? error.message : 'An error occurred with website data' }))),
 
-      const twitterPromise = fetchTwitterProfile(domainName)
-        .then((data) => setTwitterProfileText(data))
-        .catch((error) => setErrors(prev => ({ ...prev, twitter: error instanceof Error ? error.message : 'An error occurred with Twitter profile' })));
+        fetchTwitterProfile(domainName)
+          .then((data) => setTwitterProfileText(data))
+          .catch((error) => setErrors(prev => ({ ...prev, twitter: error instanceof Error ? error.message : 'An error occurred with Twitter profile' }))),
 
-      const youtubePromise = fetchYoutubeVideos(domainName)
-        .then((data) => setYoutubeVideos(data))
-        .catch((error) => setErrors(prev => ({ ...prev, youtube: error instanceof Error ? error.message : 'An error occurred with YouTube videos' })));
+        fetchYoutubeVideos(domainName)
+          .then((data) => setYoutubeVideos(data))
+          .catch((error) => setErrors(prev => ({ ...prev, youtube: error instanceof Error ? error.message : 'An error occurred with YouTube videos' }))),
 
-      const redditPromise = fetchRedditPosts(domainName)
-        .then((data) => setRedditPosts(data))
-        .catch((error) => setErrors(prev => ({ ...prev, reddit: error instanceof Error ? error.message : 'An error occurred with Reddit posts' })));
+        fetchRedditPosts(domainName)
+          .then((data) => setRedditPosts(data))
+          .catch((error) => setErrors(prev => ({ ...prev, reddit: error instanceof Error ? error.message : 'An error occurred with Reddit posts' }))),
 
-      const githubPromise = fetchGitHubUrl(domainName)
-        .then((url) => setGithubUrl(url))
-        .catch((error) => setErrors(prev => ({ ...prev, github: error instanceof Error ? error.message : 'An error occurred with GitHub' })));
+        fetchGitHubUrl(domainName)
+          .then((url) => setGithubUrl(url))
+          .catch((error) => setErrors(prev => ({ ...prev, github: error instanceof Error ? error.message : 'An error occurred with GitHub' }))),
 
-      const fundingPromise = fetchFunding(domainName)
-        .then((data) => setFundingData(data))
-        .catch((error) => setErrors(prev => ({ ...prev, funding: error instanceof Error ? error.message : 'An error occurred with funding data' })));
+        fetchFunding(domainName)
+          .then((data) => setFundingData(data))
+          .catch((error) => setErrors(prev => ({ ...prev, funding: error instanceof Error ? error.message : 'An error occurred with funding data' }))),
 
-      const financialReportPromise = fetchFinancialReport(domainName)
-        .then((data) => setFinancialReport(data))
-        .catch((error) => setErrors(prev => ({ ...prev, financial: error instanceof Error ? error.message : 'An error occurred with financial report' })));
+        fetchFinancialReport(domainName)
+          .then((data) => setFinancialReport(data))
+          .catch((error) => setErrors(prev => ({ ...prev, financial: error instanceof Error ? error.message : 'An error occurred with financial report' }))),
 
-      const tiktokPromise = fetchTikTokProfile(domainName)
-        .then((data) => setTiktokData(data))
-        .catch((error) => setErrors(prev => ({ ...prev, tiktok: error instanceof Error ? error.message : 'An error occurred with TikTok profile' })));
+        fetchTikTokProfile(domainName)
+          .then((data) => setTiktokData(data))
+          .catch((error) => setErrors(prev => ({ ...prev, tiktok: error instanceof Error ? error.message : 'An error occurred with TikTok profile' }))),
 
-      const wikipediaPromise = fetchWikipedia(domainName)
-        .then((data) => setWikipediaData(data))
-        .catch((error) => setErrors(prev => ({ ...prev, wikipedia: error instanceof Error ? error.message : 'An error occurred with Wikipedia data' })));
+        fetchWikipedia(domainName)
+          .then((data) => setWikipediaData(data))
+          .catch((error) => setErrors(prev => ({ ...prev, wikipedia: error instanceof Error ? error.message : 'An error occurred with Wikipedia data' }))),
 
-      const crunchbasePromise = fetchCrunchbase(domainName)
-        .then((data) => setCrunchbaseData(data))
-        .catch((error) => setErrors(prev => ({ ...prev, crunchbase: error instanceof Error ? error.message : 'An error occurred with Crunchbase data' })));
+        fetchCrunchbase(domainName)
+          .then((data) => setCrunchbaseData(data))
+          .catch((error) => setErrors(prev => ({ ...prev, crunchbase: error instanceof Error ? error.message : 'An error occurred with Crunchbase data' }))),
 
-      const pitchbookPromise = fetchPitchbook(domainName)
-        .then((data) => setPitchbookData(data))
-        .catch((error) => setErrors(prev => ({ ...prev, pitchbook: error instanceof Error ? error.message : 'An error occurred with PitchBook data' })));
+        fetchPitchbook(domainName)
+          .then((data) => setPitchbookData(data))
+          .catch((error) => setErrors(prev => ({ ...prev, pitchbook: error instanceof Error ? error.message : 'An error occurred with PitchBook data' }))),
 
-      const tracxnPromise = fetchTracxn(domainName)
-        .then((data) => setTracxnData(data))
-        .catch((error) => setErrors(prev => ({ ...prev, tracxn: error instanceof Error ? error.message : 'An error occurred with Tracxn data' })));
+        fetchTracxn(domainName)
+          .then((data) => setTracxnData(data))
+          .catch((error) => setErrors(prev => ({ ...prev, tracxn: error instanceof Error ? error.message : 'An error occurred with Tracxn data' }))),
 
-      const foundersPromise = fetchFounders(domainName)
-        .then((data) => setFounders(data))
-        .catch((error) => setErrors(prev => ({ ...prev, founders: error instanceof Error ? error.message : 'An error occurred with founders' })));
+        fetchFounders(domainName)
+          .then((data) => setFounders(data))
+          .catch((error) => setErrors(prev => ({ ...prev, founders: error instanceof Error ? error.message : 'An error occurred with founders' })))
+      ];
 
-      await Promise.allSettled([
-        linkedinPromise,
-        competitorsPromise,
-        newsPromise,
-        websiteDataPromise,
-        twitterPromise,
-        youtubePromise,
-        redditPromise,
-        githubPromise,
-        fundingPromise,
-        financialReportPromise,
-        tiktokPromise,
-        wikipediaPromise,
-        crunchbasePromise,
-        pitchbookPromise,
-        tracxnPromise,
-        foundersPromise
-      ]);
+      await Promise.allSettled(promises);
     } finally {
       setIsGenerating(false);
     }
