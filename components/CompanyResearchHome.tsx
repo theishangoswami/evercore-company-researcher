@@ -815,154 +815,180 @@ export default function CompanyResearcher() {
         </div>
       ))}
 
-      <div className="space-y-16">
-        <div className="space-y-16">
-          {isGenerating && linkedinData === null ? (
-            <LinkedInSkeleton />
-          ) : linkedinData && (
-            <div className="opacity-0 animate-fade-up [animation-delay:200ms]">
-              <LinkedInDisplay data={linkedinData} />
+      <div className="space-y-12">
+        {/* Company Overview Section */}
+        {(linkedinData || companySummary || founders || financialReport || 
+          fundingData || crunchbaseData || pitchbookData || tracxnData || 
+          wikipediaData) && (
+          <div className="space-y-16">
+            <div className="flex items-center">
+              <h2 className="text-4xl font-medium">Company Overview</h2>
             </div>
-          )}
 
-          {isGenerating && youtubeVideos === null ? (
-            <YouTubeSkeleton />
-          ) : youtubeVideos && youtubeVideos.length > 0 && (
-            <div className="opacity-0 animate-fade-up [animation-delay:200ms]">
-              <YoutubeVideosDisplay videos={youtubeVideos} />
-            </div>
-          )}
-
-          {isGenerating && tiktokData === null ? (
-            <TikTokSkeleton />
-          ) : tiktokData && (
-            <div className="opacity-0 animate-fade-up [animation-delay:200ms]">
-              <TikTokDisplay data={tiktokData} />
-            </div>
-          )}
-
-          {isGenerating && githubUrl === null ? (
-            <GitHubSkeleton />
-          ) : githubUrl && (
-            <div className="opacity-0 animate-fade-up [animation-delay:200ms]">
-              <GitHubDisplay githubUrl={githubUrl} />
-            </div>
-          )}
-
-          {isGenerating && redditPosts === null ? (
-            <RedditSkeleton />
-          ) : redditPosts && redditPosts.length > 0 && (
-            <div className="opacity-0 animate-fade-up [animation-delay:200ms]">
-              <RedditDisplay posts={redditPosts} />
-            </div>
-          )}
-
-          {isGenerating && twitterProfileText === null ? (
-            <TwitterSkeleton />
-          ) : twitterProfileText && (
-            <div className="opacity-0 animate-fade-up [animation-delay:200ms]">
-              <ProfileDisplay rawText={twitterProfileText.text} username={twitterProfileText.username} />
-              {recentTweets && <RecentTweetsDisplay tweets={recentTweets} />}
-            </div>
-          )}
-
-          {isGenerating && competitors === null ? (
-            <CompetitorsSkeleton />
-          ) : competitors && competitors.length > 0 && (
-            <div className="opacity-0 animate-fade-up [animation-delay:200ms]">
-              <CompetitorsDisplay competitors={competitors} />
-            </div>
-          )}
-
-          {isGenerating && news === null ? (
-            <NewsSkeleton />
-          ) : news && news.length > 0 && (
-            <div className="opacity-0 animate-fade-up [animation-delay:200ms]">
-              <NewsDisplay news={news} />
-            </div>
-          )}
-
-          {isGenerating && founders === null ? (
-            <FoundersSkeleton />
-          ) : founders && founders.length > 0 && (
-            <div className="opacity-0 animate-fade-up [animation-delay:200ms]">
-              <FoundersDisplay founders={founders} />
-            </div>
-          )}
-
-          {isGenerating && wikipediaData === null ? (
-            <WikipediaSkeleton />
-          ) : wikipediaData && (
-            <div className="opacity-0 animate-fade-up [animation-delay:200ms]">
-              <WikipediaDisplay data={wikipediaData} />
-            </div>
-          )}
-
-          {isGenerating && financialReport === null ? (
-            <FinancialSkeleton />
-          ) : financialReport && (
-            <div className="opacity-0 animate-fade-up [animation-delay:200ms]">
-              <FinancialReportDisplay report={financialReport} />
-            </div>
-          )}
-
-          <div className="space-y-6 pb-8">
-            {isGenerating && fundingData === null ? (
-              <FundingSkeleton />
-            ) : fundingData && (
+            {isGenerating && linkedinData === null ? (
+              <LinkedInSkeleton />
+            ) : linkedinData && (
               <div className="opacity-0 animate-fade-up [animation-delay:200ms]">
-                <FundingDisplay fundingData={fundingData} />
+                <LinkedInDisplay data={linkedinData} />
               </div>
             )}
 
-            {isGenerating && crunchbaseData === null ? (
-              <FundingSkeleton />
-            ) : crunchbaseData && (
+            {isGenerating && companySummary === null ? (
+              <CompanySummarySkeleton />
+            ) : companySummary && (
               <div className="opacity-0 animate-fade-up [animation-delay:200ms]">
-                <CrunchbaseDisplay data={crunchbaseData} />
+                <CompanySummary summary={companySummary} />
               </div>
             )}
 
-            {isGenerating && pitchbookData === null ? (
-              <FundingSkeleton />
-            ) : pitchbookData && (
+            {isGenerating && founders === null ? (
+              <FoundersSkeleton />
+            ) : founders && founders.length > 0 && (
               <div className="opacity-0 animate-fade-up [animation-delay:200ms]">
-                <PitchBookDisplay data={pitchbookData} />
+                <FoundersDisplay founders={founders} />
               </div>
             )}
 
-            {isGenerating && tracxnData === null ? (
-              <FundingSkeleton />
-            ) : tracxnData && (
+            {isGenerating && financialReport === null ? (
+              <FinancialSkeleton />
+            ) : financialReport && (
               <div className="opacity-0 animate-fade-up [animation-delay:200ms]">
-                <TracxnDisplay data={tracxnData} />
+                <FinancialReportDisplay report={financialReport} />
+              </div>
+            )}
+
+            <div className="space-y-6">
+              {isGenerating && fundingData === null ? (
+                <FundingSkeleton />
+              ) : fundingData && (
+                <div className="opacity-0 animate-fade-up [animation-delay:200ms]">
+                  <FundingDisplay fundingData={fundingData} />
+                </div>
+              )}
+
+              {isGenerating && crunchbaseData === null ? (
+                <FundingSkeleton />
+              ) : crunchbaseData && (
+                <div className="opacity-0 animate-fade-up [animation-delay:200ms]">
+                  <CrunchbaseDisplay data={crunchbaseData} />
+                </div>
+              )}
+
+              {isGenerating && pitchbookData === null ? (
+                <FundingSkeleton />
+              ) : pitchbookData && (
+                <div className="opacity-0 animate-fade-up [animation-delay:200ms]">
+                  <PitchBookDisplay data={pitchbookData} />
+                </div>
+              )}
+
+              {isGenerating && tracxnData === null ? (
+                <FundingSkeleton />
+              ) : tracxnData && (
+                <div className="opacity-0 animate-fade-up [animation-delay:200ms]">
+                  <TracxnDisplay data={tracxnData} />
+                </div>
+              )}
+            </div>
+
+            {isGenerating && wikipediaData === null ? (
+              <WikipediaSkeleton />
+            ) : wikipediaData && (
+              <div className="opacity-0 animate-fade-up [animation-delay:200ms]">
+                <WikipediaDisplay data={wikipediaData} />
+              </div>
+            )}
+
+            {isGenerating && competitors === null ? (
+              <CompetitorsSkeleton />
+            ) : competitors && competitors.length > 0 && (
+              <div className="opacity-0 animate-fade-up [animation-delay:200ms]">
+                <CompetitorsDisplay competitors={competitors} />
+              </div>
+            )}
+
+            {isGenerating && news === null ? (
+              <NewsSkeleton />
+            ) : news && news.length > 0 && (
+              <div className="opacity-0 animate-fade-up [animation-delay:200ms]">
+                <NewsDisplay news={news} />
               </div>
             )}
           </div>
+        )}
 
-          {isGenerating && companySummary === null ? (
-            <CompanySummarySkeleton />
-          ) : companySummary && (
-            <div className="opacity-0 animate-fade-up [animation-delay:200ms]">
-              <CompanySummary summary={companySummary} />
+        {/* Company Socials Section */}
+        {(twitterProfileText || youtubeVideos || tiktokData || 
+          redditPosts || githubUrl) && (
+          <div className="space-y-16">
+            <div className="flex items-center">
+              <h2 className="text-4xl font-medium">Company Socials</h2>
             </div>
-          )}
 
-          {isGenerating && companyMap === null ? (
-            <div className="animate-pulse">
-              <div className="h-64 bg-secondary-darkest rounded-lg flex items-center justify-center">
-                <p className="text-gray-400 text-md">Loading...</p>
+            {isGenerating && twitterProfileText === null ? (
+              <TwitterSkeleton />
+            ) : twitterProfileText && (
+              <div className="opacity-0 animate-fade-up [animation-delay:200ms]">
+                <ProfileDisplay rawText={twitterProfileText.text} username={twitterProfileText.username} />
+                {recentTweets && <RecentTweetsDisplay tweets={recentTweets} />}
               </div>
+            )}
+
+            {isGenerating && youtubeVideos === null ? (
+              <YouTubeSkeleton />
+            ) : youtubeVideos && youtubeVideos.length > 0 && (
+              <div className="opacity-0 animate-fade-up [animation-delay:200ms]">
+                <YoutubeVideosDisplay videos={youtubeVideos} />
+              </div>
+            )}
+
+            {isGenerating && tiktokData === null ? (
+              <TikTokSkeleton />
+            ) : tiktokData && (
+              <div className="opacity-0 animate-fade-up [animation-delay:200ms]">
+                <TikTokDisplay data={tiktokData} />
+              </div>
+            )}
+
+            {isGenerating && redditPosts === null ? (
+              <RedditSkeleton />
+            ) : redditPosts && redditPosts.length > 0 && (
+              <div className="opacity-0 animate-fade-up [animation-delay:200ms]">
+                <RedditDisplay posts={redditPosts} />
+              </div>
+            )}
+
+            {isGenerating && githubUrl === null ? (
+              <GitHubSkeleton />
+            ) : githubUrl && (
+              <div className="opacity-0 animate-fade-up [animation-delay:200ms]">
+                <GitHubDisplay githubUrl={githubUrl} />
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Company Mind Map Section */}
+        {companyMap && (
+          <div className="space-y-8">
+            <div className="flex items-center">
+              <h2 className="text-4xl font-medium">Company Mind Map</h2>
             </div>
-          ) : companyMap && (
-            <div className="opacity-0 animate-fade-up [animation-delay:200ms]">
-              <h2 className="text-2xl font-normal pb-6">Company Mind Map</h2>
-              <CompanyMindMap data={companyMap} />
-            </div>
-          )}
-          
-        </div>
+
+            {isGenerating && companyMap === null ? (
+              <div className="animate-pulse">
+                <div className="h-64 bg-secondary-darkest rounded-lg flex items-center justify-center">
+                  <p className="text-gray-400 text-md">Loading...</p>
+                </div>
+              </div>
+            ) : companyMap && (
+              <div className="opacity-0 animate-fade-up [animation-delay:200ms]">
+                <CompanyMindMap data={companyMap} />
+              </div>
+            )}
+          </div>
+        )}
       </div>
-    </div>
+    </div>  
   );
 }
