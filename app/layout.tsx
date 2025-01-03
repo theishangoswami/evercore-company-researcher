@@ -21,8 +21,19 @@ const reckless = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Company Researcher Tool",
-  description: "Discover detailed insights about companies using AI-powered research. Get comprehensive analysis, key metrics, and strategic information to make informed business decisions.",
+  title: "Company Researcher",
+  description: "Instantly get detailed research insights and know everything about any company inside out.",
+  openGraph: {
+    title: 'Company Researcher',
+    description: 'Instantly get detailed research insights and know everything about any company inside out.',
+    images: ['https://companyresearcher.exa.ai/opengraph-image.jpg'],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Company Researcher',
+    description: 'Instantly get detailed research insights and know everything about any company inside out.',
+    images: ['https://companyresearcher.exa.ai/opengraph-image.jpg'],
+  },
 };
 
 export default function RootLayout({
