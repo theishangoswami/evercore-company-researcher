@@ -35,6 +35,7 @@ import {
   CompanySummarySkeleton,
 } from "./skeletons/ResearchSkeletons";
 import CompanyMindMap from './mindmap/CompanyMindMap';
+import Link from "next/link";
 
 interface LinkedInData {
   text: string;
@@ -794,6 +795,18 @@ export default function CompanyResearcher() {
         >
           {isGenerating ? 'Researching...' : 'Research Now'}
         </button>
+
+        <div className="flex items-center justify-end gap-2 sm:gap-3 pt-4 opacity-0 animate-fade-up [animation-delay:1000ms]">
+          <span className="text-gray-800">Powered by</span>
+          <a 
+            href="https://exa.ai" 
+            target="_blank" 
+            rel="origin"
+            className="hover:opacity-80 transition-opacity"
+          >
+            <img src="/exa_logo.png" alt="Exa Logo" className="h-6 sm:h-7 object-contain" />
+          </a>
+        </div>
       </form>
 
       {Object.entries(errors).map(([key, message]) => (
@@ -984,6 +997,31 @@ export default function CompanyResearcher() {
 
         )}
       </div>
+      <div className="flex-grow"></div>
+        <footer className="fixed bottom-0 left-0 right-0 w-full py-4 bg-secondary-default border-t opacity-0 animate-fade-up [animation-delay:1200ms]">
+          <div className="max-w-2xl mx-auto flex flex-col sm:flex-row items-center justify-center gap-6 px-4">
+            <Link 
+              href="https://github.com/exa-labs/company-researcher"
+              target="_blank"
+              rel="origin"
+              className="text-gray-600 hover:underline cursor-pointer text-center"
+            >
+              Clone this open source project here
+            </Link>
+            <span className="text-gray-400 hidden sm:inline">|</span>
+            <Link 
+                href="https://exa.ai" 
+                target="_blank" 
+                rel="origin"
+                className="hover:opacity-80 transition-opacity"
+              >
+            <div className="flex items-center gap-2">
+              <span className="text-gray-600 hover:text-gray-600 hover:underline">Powered by</span>
+                <img src="/exa_logo.png" alt="Exa Logo" className="h-5 object-contain" />
+            </div>
+            </Link>
+          </div>
+        </footer>
     </div>  
   );
 }
