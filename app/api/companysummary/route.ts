@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
     });
 
     const { object } = await generateObject({
-      model: anthropic('claude-3-5-sonnet-20240620'),
+      model: anthropic('claude-3-5-sonnet-latest'),
       schema: summarySchema,
       output: 'object',
       system: "All the output content should be in simple english. Don't use any difficult words.",
