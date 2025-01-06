@@ -21,7 +21,8 @@ export async function POST(req: NextRequest) {
           text: true,
           numResults: 1,
           livecrawl: "always",
-          includeDomains: ["x.com"]
+          includeText: [websiteurl],
+          includeDomains: ["x.com", "twitter.com"]
         }
     )
 
