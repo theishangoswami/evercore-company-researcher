@@ -204,15 +204,70 @@ export default function CompanyResearcher() {
     }
   };
 
-  // Competitors API fetch function
-  const fetchCompetitors = async (url: string) => {
+  // Function to scrape main page
+  const scrapeMainPage = async (url: string) => {
+    try {
+      const response = await fetch('/api/scrapewebsiteurl', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ websiteurl: url }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch main website data');
+      }
+
+      const data = await response.json();
+      return data.results;
+    } catch (error) {
+      console.error('Error scraping main page:', error);
+      throw error;
+    }
+  };
+
+  // Function to fetch company details (summary and map)
+  const fetchCompanyDetails = async (mainPageData: any, url: string) => {
+    try {
+      // First fetch subpages
+      const subpagesResponse = await fetch('/api/scrapewebsitesubpages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ websiteurl: url }),
+      });
+
+      if (!subpagesResponse.ok) {
+        throw new Error('Failed to fetch subpages data');
+      }
+
+      const subpagesData = await subpagesResponse.json();
+
+      // Then use both main page and subpages data
+      await Promise.all([
+        fetchCompanySummary(subpagesData.results, mainPageData, url),
+        fetchCompanyMap(mainPageData, url)
+      ]);
+    } catch (error) {
+      console.error('Error fetching company details:', error);
+      throw error;
+    }
+  };
+
+  // Update fetchCompetitors to only use main page data
+  const fetchCompetitors = async (summary: string, url: string) => {
     try {
       const response = await fetch('/api/findcompetitors', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ websiteurl: url }),
+        body: JSON.stringify({ 
+          websiteurl: url, 
+          summaryText: summary 
+        }),
       });
 
       if (!response.ok) {
@@ -304,51 +359,6 @@ export default function CompanyResearcher() {
     } catch (error) {
       console.error('Error fetching company map:', error);
       setErrors(prev => ({ ...prev, map: error instanceof Error ? error.message : 'An error occurred with company map' }));
-    }
-  };
-
-  // Update fetchWebsiteData to handle both API calls independently
-  const fetchWebsiteData = async (url: string) => {
-    try {
-      // Step 1: Fetch data from subpages and main page in parallel
-      const subpagesFetch = fetch('/api/scrapewebsitesubpages', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ websiteurl: url }),
-      });
-
-      const mainPageFetch = fetch('/api/scrapewebsiteurl', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ websiteurl: url }),
-      });
-
-      // Run both requests in parallel and await their results
-      const [subpagesResponse, mainPageResponse] = await Promise.all([subpagesFetch, mainPageFetch]);
-
-      if (!subpagesResponse.ok) {
-        throw new Error('Failed to fetch subpages data');
-      }
-      if (!mainPageResponse.ok) {
-        throw new Error('Failed to fetch main website data');
-      }
-
-      const subpagesData = await subpagesResponse.json();
-      const mainPageData = await mainPageResponse.json();
-
-      // Trigger both API calls independently
-      await Promise.all([
-        fetchCompanySummary(subpagesData.results, mainPageData.results, url),
-        fetchCompanyMap(mainPageData.results, url)
-      ]);
-
-    } catch (error) {
-      console.error('Error fetching website data:', error);
-      throw error;
     }
   };
 
@@ -766,21 +776,31 @@ export default function CompanyResearcher() {
     setCompanyMap(null);
 
     try {
+      // Run all API calls in parallel
       const promises = [
+        // Main page scraping - other functions will wait for this internally if they need it
+        scrapeMainPage(domainName)
+          .then(mainPageData => {
+            if (mainPageData && mainPageData[0]?.summary) {
+              // Start company details and competitors once we have main page data
+              fetchCompanyDetails(mainPageData, domainName)
+                .catch((error) => setErrors(prev => ({ ...prev, companyDetails: error instanceof Error ? error.message : 'An error occurred with company details' })));
+              
+              fetchCompetitors(mainPageData[0].summary, domainName)
+                .then((data) => setCompetitors(data))
+                .catch((error) => setErrors(prev => ({ ...prev, competitors: error instanceof Error ? error.message : 'An error occurred with competitors' })));
+            }
+          })
+          .catch((error) => setErrors(prev => ({ ...prev, websiteData: error instanceof Error ? error.message : 'An error occurred with website data' }))),
+
+        // Independent API calls that don't need main page data
         fetchLinkedInData(domainName)
           .then((data) => setLinkedinData(data))
           .catch((error) => setErrors(prev => ({ ...prev, linkedin: error instanceof Error ? error.message : 'An error occurred with LinkedIn' }))),
 
-        fetchCompetitors(domainName)
-          .then((data) => setCompetitors(data))
-          .catch((error) => setErrors(prev => ({ ...prev, competitors: error instanceof Error ? error.message : 'An error occurred with competitors' }))),
-
         fetchNews(domainName)
           .then((data) => setNews(data))
           .catch((error) => setErrors(prev => ({ ...prev, news: error instanceof Error ? error.message : 'An error occurred with news' }))),
-        
-        fetchWebsiteData(domainName)
-          .catch((error) => setErrors(prev => ({ ...prev, websiteData: error instanceof Error ? error.message : 'An error occurred with website data' }))),
 
         fetchTwitterProfile(domainName)
           .then((data) => setTwitterProfileText(data))

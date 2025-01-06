@@ -16,7 +16,10 @@ export async function POST(req: NextRequest) {
     const result = await exa.getContents(
         [websiteurl],
         {
-          text: true
+          text: true,
+          summary: {
+            query: "Describe the company in few word. It should be very simple and explicity tell what does the company do/is. Do not include the name of the company."
+          }
         }
       );
 
