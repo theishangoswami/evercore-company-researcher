@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FaWikipediaW } from 'react-icons/fa';
+import { FiChevronDown, FiChevronUp } from 'react-icons/fi';
 
 interface WikipediaDisplayProps {
   data: {
@@ -44,6 +45,8 @@ const isCompanyWikipedia = (wikiUrl: string, companyName: string): boolean => {
 };
 
 const WikipediaDisplay: React.FC<WikipediaDisplayProps> = ({ data, websiteUrl }) => {
+  const [showAllEvents, setShowAllEvents] = useState(false);
+  
   // Check for empty API response or missing data
   if (!data || (!data.text && !data.url) || (Array.isArray(data) && data.length === 0) || 
       (data.hasOwnProperty('results') && Array.isArray((data as any).results) && (data as any).results.length === 0)) {
@@ -205,7 +208,9 @@ const WikipediaDisplay: React.FC<WikipediaDisplayProps> = ({ data, websiteUrl })
         <div className="mb-8">
           <p className="text-xl font-semibold mb-4">Major Events</p>
           <div className="space-y-4">
-            {timeline.map((event, index) => (
+            {timeline
+              .slice(0, showAllEvents ? undefined : 3)
+              .map((event, index) => (
               <div key={index} className="flex gap-4 items-start group">
                 <div className="min-w-[80px] bg-brand-default/10 px-3 py-2 rounded-full text-brand-default font-medium text-sm text-center transition-colors">
                   {event.year}
@@ -214,6 +219,22 @@ const WikipediaDisplay: React.FC<WikipediaDisplayProps> = ({ data, websiteUrl })
               </div>
             ))}
           </div>
+          {timeline.length > 3 && (
+            <button
+              onClick={() => setShowAllEvents(!showAllEvents)}
+              className="mt-6 flex items-center gap-2 text-brand-default hover:text-brand-default/80 transition-colors"
+            >
+              {showAllEvents ? (
+                <>
+                  Show Less <FiChevronUp className="text-lg" />
+                </>
+              ) : (
+                <>
+                  Show More ({timeline.length - 3} more events) <FiChevronDown className="text-lg" />
+                </>
+              )}
+            </button>
+          )}
         </div>
       )}
 
