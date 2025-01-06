@@ -9,6 +9,10 @@ interface FundingDisplayProps {
 }
 
 export default function FundingDisplay({ fundingData }: FundingDisplayProps) {
+  if (fundingData.summary.startsWith("NO")) {
+    return null;
+  }
+
   return (
     <div className="w-full">
     <h2 className="text-2xl font-normal mb-8">Funding</h2>

@@ -20,6 +20,7 @@ export async function POST(req: NextRequest) {
         type: "keyword",
         category: "financial report", 
         livecrawl: "always",
+        text: true,
         includeText: [websiteurl],
       }
     );

@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
           numResults: 1,
           text: true,
           summary: {
-            query: "Tell me all about the funding (and if available, the valuation) of this company in detail. Do not tell me about the company, just give all the funding information in detail."
+            query: `Tell me all about the funding (and if available, the valuation) of this company in detail. Do not tell me about the company, just give all the funding information in detail. If funding or valuation info is not preset, just reply with one word "NO".`
           },
           livecrawl: "always",
           includeText: [websiteurl]
