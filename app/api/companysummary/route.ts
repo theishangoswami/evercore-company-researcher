@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
       model: anthropic('claude-3-5-sonnet-latest'),
       schema: summarySchema,
       output: 'object',
-      system: "All the output content should be in simple english. Don't use any difficult words.",
+      system: "All the output content should be in simple english. Don't use any difficult words. Keep sentences short and simple.",
       prompt: `You are an expert at writing important points about a company.
       Here are the content from a company's website so you can understand about the company in detail.
       
@@ -46,6 +46,8 @@ export async function POST(req: NextRequest) {
       Don't make up any information yourself, only use the information which is given in the above content.
 
       It should be (an emoji with heading) and then text with it. Give maximum 6 headings (the most important ones).
+
+      The text/description should be short, simple and easy to understand.
 
       All the output content should be in simple english. Don't use any difficult words.
       

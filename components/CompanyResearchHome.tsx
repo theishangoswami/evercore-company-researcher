@@ -657,6 +657,40 @@ export default function CompanyResearcher() {
     }
   };
 
+  // Add helper function to process LinkedIn text
+  const processLinkedInText = (data: LinkedInData) => {
+    const extract = (marker: string): string => {
+      const index = data.text.indexOf(marker);
+      if (index === -1) return '';
+      
+      const start = index + marker.length;
+      const possibleEndMarkers = ['Industry', 'Company size', 'Headquarters', '\n\n'];
+      let end = data.text.length;
+      
+      for (const endMarker of possibleEndMarkers) {
+        const nextIndex = data.text.indexOf(endMarker, start);
+        if (nextIndex !== -1 && nextIndex < end && nextIndex > start) {
+          end = nextIndex;
+        }
+      }
+      
+      return data.text.substring(start, end).trim();
+    };
+
+    return {
+      companySize: extract('Company size')
+    };
+  };
+
+  // Add helper function to parse company size
+  const parseCompanySize = (size: string): number => {
+    if (!size) return 0;
+    // Extract first number from string (e.g. "1,001-5,000" -> 1001)
+    const match = size.match(/(\d+(?:,\d+)*)/);
+    if (!match) return 0;
+    return parseInt(match[1].replace(/,/g, ''));
+  };
+
   // Main Research Function
   const handleResearch = async (e: FormEvent) => {
     e.preventDefault();
@@ -843,12 +877,14 @@ export default function CompanyResearcher() {
               </div>
             )}
 
-            {isGenerating && financialReport === null ? (
-              <FinancialSkeleton />
-            ) : financialReport && (
-              <div className="opacity-0 animate-fade-up [animation-delay:200ms]">
-                <FinancialReportDisplay report={financialReport} />
-              </div>
+            {linkedinData && parseCompanySize(processLinkedInText(linkedinData).companySize) >= 1000 && (
+              isGenerating && financialReport === null ? (
+                <FinancialSkeleton />
+              ) : financialReport && (
+                <div className="opacity-0 animate-fade-up [animation-delay:200ms]">
+                  <FinancialReportDisplay report={financialReport} />
+                </div>
+              )
             )}
 
             <div className="space-y-6">
@@ -999,7 +1035,7 @@ export default function CompanyResearcher() {
       </div>
       <div className="flex-grow"></div>
         <footer className="fixed bottom-0 left-0 right-0 w-full py-4 bg-secondary-default border-t opacity-0 animate-fade-up [animation-delay:1200ms]">
-          <div className="max-w-2xl mx-auto flex flex-col sm:flex-row items-center justify-center gap-6 px-4">
+          <div className="max-w-2xl mx-auto flex flex-col sm:flex-row items-center justify-center sm:gap-6 px-4">
             <Link 
               href="https://github.com/exa-labs/company-researcher"
               target="_blank"
@@ -1013,7 +1049,7 @@ export default function CompanyResearcher() {
                 href="https://exa.ai" 
                 target="_blank" 
                 rel="origin"
-                className="hover:opacity-80 transition-opacity"
+                className="hover:opacity-80 transition-opacity hidden sm:inline"
               >
             <div className="flex items-center gap-2">
               <span className="text-gray-600 hover:text-gray-600 hover:underline">Powered by</span>
