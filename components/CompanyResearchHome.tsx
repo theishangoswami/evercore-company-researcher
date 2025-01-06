@@ -126,9 +126,37 @@ export default function CompanyResearcher() {
   const [founders, setFounders] = useState<Founder[] | null>(null);
   const [companyMap, setCompanyMap] = useState<CompanyMapData | null>(null);
 
+  // Function to check if a string is a valid URL
+  const isValidUrl = (url: string): boolean => {
+    try {
+      // Remove any whitespace
+      url = url.trim();
+      
+      // Check if it's just a single word without dots
+      if (!url.includes('.')) {
+        return false;
+      }
+
+      // Add protocol if missing
+      if (!url.startsWith('http://') && !url.startsWith('https://')) {
+        url = 'https://' + url;
+      }
+
+      const urlObj = new URL(url);
+      // Check if hostname has at least one dot and no spaces
+      return urlObj.hostname.includes('.') && !urlObj.hostname.includes(' ');
+    } catch {
+      return false;
+    }
+  };
+
   // Function to validate and extract domain name from URL
   const extractDomain = (url: string): string | null => {
     try {
+      if (!isValidUrl(url)) {
+        return null;
+      }
+
       let cleanUrl = url.trim().toLowerCase();
       
       // Add protocol if missing
@@ -140,7 +168,14 @@ export default function CompanyResearcher() {
       const parsedUrl = new URL(cleanUrl);
       
       // Get domain without www.
-      return parsedUrl.hostname.replace(/^www\./, '');
+      const domain = parsedUrl.hostname.replace(/^www\./, '');
+      
+      // Additional validation: domain should have at least one dot and no spaces
+      if (!domain.includes('.') || domain.includes(' ')) {
+        return null;
+      }
+
+      return domain;
     } catch (error) {
       return null;
     }
@@ -703,7 +738,7 @@ export default function CompanyResearcher() {
     const domainName = extractDomain(companyUrl);
     
     if (!domainName) {
-      setErrors({ form: "Please enter a valid URL (e.g., 'example.com', 'www.example.com', or 'https://example.com')" });
+      setErrors({ form: "Please enter a valid company URL ('example.com')" });
       return;
     }
 
