@@ -214,7 +214,6 @@ export const WikipediaSkeleton = () => (
     </div>
     <div className="space-y-3">
       <Skeleton className="h-4 w-full" />
-      <Skeleton className="h-4 w-full" />
       <Skeleton className="h-4 w-3/4" />
       <Skeleton className="h-4 w-[85%]" />
     </div>
@@ -267,8 +266,6 @@ export const CompanySummarySkeleton = () => (
     </div>
     <div className="space-y-3">
       <Skeleton className="h-4 w-full" />
-      <Skeleton className="h-4 w-full" />
-      <Skeleton className="h-4 w-[95%]" />
       <Skeleton className="h-4 w-[90%]" />
       <Skeleton className="h-4 w-[85%]" />
     </div>

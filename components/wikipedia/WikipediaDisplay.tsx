@@ -7,6 +7,7 @@ interface WikipediaDisplayProps {
     url?: string;
     title?: string;
   };
+  websiteUrl: string;
 }
 
 interface CompanyInfo {
@@ -15,8 +16,43 @@ interface CompanyInfo {
   headquarters?: string;
 }
 
-const WikipediaDisplay: React.FC<WikipediaDisplayProps> = ({ data }) => {
-  if (!data || (!data.text && !data.url)) {
+// Function to extract company name from website URL
+const extractCompanyName = (url: string): string => {
+  try {
+    // Remove protocol and www if present
+    const cleanUrl = url.replace(/^(https?:\/\/)?(www\.)?/, '');
+    // Get domain without TLD
+    const domain = cleanUrl.split('.')[0];
+    return domain.toLowerCase();
+  } catch (error) {
+    return '';
+  }
+};
+
+// Function to check if company name exists in Wikipedia URL
+const isCompanyWikipedia = (wikiUrl: string, companyName: string): boolean => {
+  try {
+    // Extract the part after /wiki/
+    const wikiPath = wikiUrl.split('/wiki/')[1];
+    // Decode URI component to handle special characters
+    const decodedPath = decodeURIComponent(wikiPath).toLowerCase();
+    // Check if company name exists in the path
+    return decodedPath.includes(companyName);
+  } catch (error) {
+    return false;
+  }
+};
+
+const WikipediaDisplay: React.FC<WikipediaDisplayProps> = ({ data, websiteUrl }) => {
+  // Check for empty API response or missing data
+  if (!data || (!data.text && !data.url) || (Array.isArray(data) && data.length === 0) || 
+      (data.hasOwnProperty('results') && Array.isArray((data as any).results) && (data as any).results.length === 0)) {
+    return null;
+  }
+
+  // Extract company name and check if Wikipedia article matches
+  const companyName = extractCompanyName(websiteUrl);
+  if (!companyName || !data.url || !isCompanyWikipedia(data.url, companyName)) {
     return null;
   }
 

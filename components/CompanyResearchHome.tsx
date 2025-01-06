@@ -897,7 +897,7 @@ export default function CompanyResearcher() {
               <WikipediaSkeleton />
             ) : wikipediaData && (
               <div className="opacity-0 animate-fade-up [animation-delay:200ms]">
-                <WikipediaDisplay data={wikipediaData} />
+                <WikipediaDisplay data={wikipediaData} websiteUrl={companyUrl} />
               </div>
             )}
 
