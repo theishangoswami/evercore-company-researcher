@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
         `${websiteurl} founder's Linkedin page:`,
         {
           type: "keyword",
-          numResults: 3,
+          numResults: 2,
           includeDomains: ["linkedin.com"]
         }
       )
