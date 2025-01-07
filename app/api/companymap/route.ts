@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
     });
 
     const { object } = await generateObject({
-      model: anthropic('claude-3-5-sonnet-latest'),
+      model: anthropic('claude-3-5-sonnet-20241022'),
       schema: mindMapSchema,
       output: 'object',
       system: "Create clear, concise mind maps that help users quickly understand companies. Use simple English and focus on the most important aspects.",

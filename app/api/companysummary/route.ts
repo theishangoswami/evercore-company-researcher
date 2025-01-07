@@ -26,10 +26,10 @@ export async function POST(req: NextRequest) {
     });
 
     const { object } = await generateObject({
-      model: anthropic('claude-3-5-sonnet-latest'),
+      model: anthropic('claude-3-5-sonnet-20241022'),
       schema: summarySchema,
       output: 'object',
-      system: "All the output content should be in simple english. Don't use any difficult words. Keep sentences short and simple.",
+      system: "All the output content should be in simple english. Don't use any difficult words. Keep sentences short and simple.  Use unique emojis for each heading.",
       prompt: `You are an expert at writing important points about a company.
       Here are the content from a company's website so you can understand about the company in detail.
       
@@ -49,9 +49,11 @@ export async function POST(req: NextRequest) {
 
       The text/description should be short, simple and easy to understand.
 
-      All the output content should be in simple english. Don't use any difficult words.
+      All the output content should be in simple english.
+
+      Use unique emojis for each heading.
       
-      Output the result as valid JSON.`
+      Output the result as JSON.`
     });
     
     // Return the sections array from the response
