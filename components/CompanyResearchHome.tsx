@@ -976,14 +976,6 @@ export default function CompanyResearcher() {
               )}
             </div>
 
-            {isGenerating && companySummary === null ? (
-              <CompanySummarySkeleton />
-            ) : companySummary && (
-              <div className="opacity-0 animate-fade-up [animation-delay:200ms]">
-                <CompanySummary summary={companySummary} />
-              </div>
-            )}
-
             {isGenerating && wikipediaData === null ? (
               <WikipediaSkeleton />
             ) : wikipediaData && (
@@ -1064,29 +1056,36 @@ export default function CompanyResearcher() {
         
 
         {/* Company Mind Map Section */}
-   
-            {isGenerating && companyMap === null ? (
+
+        {/* Summary and Mind Map Section */}
+        {companySummary && (
               <div className="space-y-8">
                 <div className="flex items-center">
-                  <h2 className="text-4xl font-medium">Company Mind Map</h2>
+                  <h2 className="text-3xl font-medium mt-6">Summary and Mind Map</h2>
                 </div>
-              <div className="animate-pulse">
-                <div className="h-64 bg-secondary-darkest rounded-lg flex items-center justify-center">
-                  <p className="text-gray-400 text-md">Loading...</p>
-                </div>
-              </div>
-            </div>
-            ) : companyMap && (
-              <div className="space-y-8 pt-16 pb-2">
-                <div className="flex items-center">
-                  <h2 className="text-4xl font-medium">Company Mind Map</h2>
-                </div>
-              <div className="opacity-0 animate-fade-up [animation-delay:200ms]">
-                <CompanyMindMap data={companyMap} />
-              </div>
-            </div>
 
-        )}
+                {isGenerating && companySummary === null ? (
+                  <CompanySummarySkeleton />
+                ) : companySummary && (
+                  <div className="opacity-0 animate-fade-up [animation-delay:200ms]">
+                    <CompanySummary summary={companySummary} />
+                  </div>
+                )}
+
+                {isGenerating && companyMap === null ? (
+                  <div className="hidden sm:block animate-pulse">
+                    <div className="h-64 bg-secondary-darkest rounded-lg flex items-center justify-center">
+                      <p className="text-gray-400 text-md">Loading...</p>
+                    </div>
+                  </div>
+                ) : companyMap && (
+                  <div className="hidden sm:block opacity-0 animate-fade-up [animation-delay:200ms]">
+                    <CompanyMindMap data={companyMap} />
+                  </div>
+                )}
+              </div>
+            )}
+
       </div>
       <div className="flex-grow"></div>
         <footer className="fixed bottom-0 left-0 right-0 w-full py-4 bg-secondary-default border-t opacity-0 animate-fade-up [animation-delay:1200ms]">
