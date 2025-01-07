@@ -14,7 +14,6 @@ Company Researcher is a free and open-source tool that helps you instantly under
 ## 📊 Data Sources & API Endpoints
 > All data is fetched using Exa's powerful search API. Each section below includes a direct link to try the API call in Exa's playground.
 
-### Company Core Information
 1. **Website Information**
    - Company Website Content ([Try API](https://dashboard.exa.ai/playground/get-contents?filters=%7B%22ids%22%3A%5B%22https%3A%2F%2Fexa.ai%22%5D%2C%22text%22%3A%22true%22%2C%22summary%22%3Atrue%7D))
    - Subpages (About, FAQs, Pricing, Blog) ([Try API](https://dashboard.exa.ai/playground/search?q=exa.ai&c=company&filters=%7B%22type%22%3A%22neural%22%2C%22text%22%3A%22true%22%2C%22numResults%22%3A1%2C%22livecrawl%22%3A%22always%22%2C%22subpages%22%3A10%2C%22subpageTarget%22%3A%5B%22about%22%2C%22pricing%22%2C%22faq%22%2C%22blog%22%5D%2C%22includeDomains%22%3A%5B%22exa.ai%22%5D%7D))
