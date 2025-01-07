@@ -19,8 +19,6 @@ export async function POST(req: NextRequest) {
         {
           type: "keyword",
           numResults: 1,
-          //@ts-ignore
-          livecrawl: "always",
           includeDomains: ["github.com"]
         }
       )

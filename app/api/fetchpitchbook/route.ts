@@ -20,8 +20,6 @@ export async function POST(req: NextRequest) {
         type: "keyword",
         numResults: 1,
         includeDomains: ["pitchbook.com"],
-        // @ts-ignore
-        livecrawl: "always",
         includeText: [websiteurl]
       }
     );

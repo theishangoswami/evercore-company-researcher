@@ -18,8 +18,6 @@ export async function POST(req: NextRequest) {
     websiteurl,
       {
         type: "keyword",
-        // @ts-ignore
-        livecrawl: "always",
         includeDomains: ["reddit.com"],
         includeText: [websiteurl]
       }

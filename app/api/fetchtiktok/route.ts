@@ -18,8 +18,6 @@ export async function POST(req: NextRequest) {
       `${websiteurl} TikTok:`,
       {
         type: "keyword",
-        // @ts-ignore
-        livecrawl: "always", 
         numResults: 1,
         includeDomains: ["tiktok.com"],
         includeText: [websiteurl]
