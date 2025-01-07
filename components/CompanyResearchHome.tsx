@@ -778,20 +778,19 @@ export default function CompanyResearcher() {
     try {
       // Run all API calls in parallel
       const promises = [
-        // Main page scraping - other functions will wait for this internally if they need it
-        scrapeMainPage(domainName)
-          .then(mainPageData => {
-            if (mainPageData && mainPageData[0]?.summary) {
-              // Start company details and competitors once we have main page data
+        // Main page scraping and dependent calls
+        (async () => {
+          const mainPageData = await scrapeMainPage(domainName);
+          if (mainPageData && mainPageData[0]?.summary) {
+            await Promise.all([
               fetchCompanyDetails(mainPageData, domainName)
-                .catch((error) => setErrors(prev => ({ ...prev, companyDetails: error instanceof Error ? error.message : 'An error occurred with company details' })));
-              
+                .catch((error) => setErrors(prev => ({ ...prev, companyDetails: error instanceof Error ? error.message : 'An error occurred with company details' }))),
               fetchCompetitors(mainPageData[0].summary, domainName)
                 .then((data) => setCompetitors(data))
-                .catch((error) => setErrors(prev => ({ ...prev, competitors: error instanceof Error ? error.message : 'An error occurred with competitors' })));
-            }
-          })
-          .catch((error) => setErrors(prev => ({ ...prev, websiteData: error instanceof Error ? error.message : 'An error occurred with website data' }))),
+                .catch((error) => setErrors(prev => ({ ...prev, competitors: error instanceof Error ? error.message : 'An error occurred with competitors' })))
+            ]);
+          }
+        })().catch((error) => setErrors(prev => ({ ...prev, websiteData: error instanceof Error ? error.message : 'An error occurred with website data' }))),
 
         // Independent API calls that don't need main page data
         fetchLinkedInData(domainName)
@@ -1055,10 +1054,8 @@ export default function CompanyResearcher() {
           </div>
         
 
-        {/* Company Mind Map Section */}
-
         {/* Summary and Mind Map Section */}
-        {companySummary && (
+        {(isGenerating || companySummary) && (
               <div className="space-y-8">
                 <div className="flex items-center">
                   <h2 className="text-3xl font-medium mt-6">Summary and Mind Map</h2>
