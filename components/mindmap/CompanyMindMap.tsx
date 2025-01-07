@@ -30,24 +30,24 @@ interface TreeNode {
 
 const CustomNode = ({ nodeDatum, isMobile }: any) => (
   <foreignObject 
-    width={isMobile ? 200 : 280} 
-    height={100} 
-    x={isMobile ? -100 : -140} 
-    y={-50}
+    width={isMobile ? 160 : 280} 
+    height={80} 
+    x={isMobile ? -80 : -140} 
+    y={-40}
   >
     <motion.div
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.3 }}
-      className="bg-[var(--secondary-faint)] p-3 md:p-4 rounded-xl border border-[var(--secondary-darkest)] 
+      className="bg-[var(--secondary-faint)] p-2 md:p-4 rounded-xl border border-[var(--secondary-darkest)] 
                  hover:shadow-md hover:border-[var(--secondary-accent)] transition-all duration-300 
                  backdrop-blur-sm"
     >
-      <div className="font-semibold text-xs md:text-sm text-gray-800 mb-1 md:mb-1.5 line-clamp-1">
+      <div className="font-semibold text-[11px] md:text-sm text-gray-800 mb-1 md:mb-1.5 line-clamp-1">
         {nodeDatum.name}
       </div>
       {nodeDatum.description && (
-        <div className="text-[10px] md:text-xs text-gray-600 line-clamp-2 leading-relaxed">
+        <div className="text-[9px] md:text-xs text-gray-600 line-clamp-2 leading-relaxed">
           {nodeDatum.description}
         </div>
       )}
@@ -102,20 +102,20 @@ const CompanyMindMap: React.FC<CompanyMindMapProps> = ({ data }) => {
         data={treeData}
         orientation="horizontal"
         nodeSize={{ 
-          x: isMobile ? 400 : 600, 
-          y: isMobile ? 40 : 60 
+          x: isMobile ? 250 : 600, 
+          y: isMobile ? 30 : 60 
         }}
         separation={{ 
-          siblings: isMobile ? 1.2 : 1.7, 
-          nonSiblings: isMobile ? 1.5 : 2.2 
+          siblings: isMobile ? 1 : 1.7, 
+          nonSiblings: isMobile ? 1.2 : 2.2 
         }}
         translate={{ 
-          x: isMobile ? 100 : 150, 
-          y: isMobile ? 200 : 350 
+          x: isMobile ? 80 : 150, 
+          y: isMobile ? 180 : 350 
         }}
         renderCustomNodeElement={renderCustomNodeElement}
         pathClassFunc={() => 'stroke-[var(--secondary-accent)] stroke-[1.5px] transition-all duration-300'}
-        zoom={isMobile ? 0.35 : 0.5}
+        zoom={isMobile ? 0.6 : 0.5}
         onNodeClick={handleNodeClick}
         enableLegacyTransitions={true}
         transitionDuration={800}
