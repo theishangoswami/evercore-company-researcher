@@ -915,13 +915,13 @@ export default function CompanyResearcher() {
             </div>
             )}
 
-            {isGenerating && linkedinData === null ? (
+            {/* {isGenerating && linkedinData === null ? (
               <LinkedInSkeleton />
             ) : linkedinData && (
               <div className="opacity-0 animate-fade-up [animation-delay:200ms]">
                 <LinkedInDisplay data={linkedinData} />
               </div>
-            )}
+            )} */}
 
             {isGenerating && founders === null ? (
               <FoundersSkeleton />
