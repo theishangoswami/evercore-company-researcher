@@ -915,13 +915,13 @@ export default function CompanyResearcher() {
             </div>
             )}
 
-            {/* {isGenerating && linkedinData === null ? (
+            {isGenerating && linkedinData === null ? (
               <LinkedInSkeleton />
             ) : linkedinData && (
               <div className="opacity-0 animate-fade-up [animation-delay:200ms]">
                 <LinkedInDisplay data={linkedinData} />
               </div>
-            )} */}
+            )}
 
             {isGenerating && founders === null ? (
               <FoundersSkeleton />
@@ -1009,15 +1009,6 @@ export default function CompanyResearcher() {
             <div className="flex items-center">
               <h2 className="text-4xl font-medium">Company Socials</h2>
             </div>
-            )}
-
-            {isGenerating && twitterProfileText === null ? (
-              <TwitterSkeleton />
-            ) : twitterProfileText && (
-              <div className="opacity-0 animate-fade-up [animation-delay:200ms]">
-                <ProfileDisplay rawText={twitterProfileText.text} username={twitterProfileText.username} />
-                {recentTweets && <RecentTweetsDisplay tweets={recentTweets} />}
-              </div>
             )}
 
             {isGenerating && youtubeVideos === null ? (
