@@ -1088,13 +1088,13 @@ export default function CompanyResearcher() {
             </Link>
             <span className="text-gray-400 hidden sm:inline">|</span>
             <Link 
-                href="https://exa.ai" 
+                href="https://exa.ai/demos" 
                 target="_blank" 
                 rel="origin"
                 className="hover:opacity-80 transition-opacity hidden sm:inline"
               >
             <div className="flex items-center gap-2">
-              <span className="text-gray-600 hover:text-gray-600 hover:underline">Powered by</span>
+              <span className="text-gray-600 hover:text-gray-600 hover:underline">See more demos by</span>
                 <img src="/exa_logo.png" alt="Exa Logo" className="h-5 object-contain" />
             </div>
             </Link>
