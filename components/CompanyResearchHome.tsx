@@ -1084,7 +1084,7 @@ export default function CompanyResearcher() {
               rel="origin"
               className="text-gray-600 hover:underline cursor-pointer text-center"
             >
-              Clone this open source project here
+              View Project Code
             </Link>
             <span className="text-gray-400 hidden sm:inline">|</span>
             <Link 
@@ -1094,8 +1094,18 @@ export default function CompanyResearcher() {
                 className="hover:opacity-80 transition-opacity hidden sm:inline"
               >
             <div className="flex items-center gap-2">
-              <span className="text-gray-600 hover:text-gray-600 hover:underline">See more demos by</span>
-                <img src="/exa_logo.png" alt="Exa Logo" className="h-5 object-contain" />
+              <span className="text-gray-600 hover:text-gray-600 hover:underline">See More Demos</span>
+            </div>
+            </Link>
+            <span className="text-gray-400 hidden sm:inline">|</span>
+            <Link 
+                href="https://dashboard.exa.ai" 
+                target="_blank" 
+                rel="origin"
+                className="hover:opacity-80 transition-opacity hidden sm:inline"
+              >
+            <div className="flex items-center gap-2">
+              <span className="text-gray-600 hover:text-gray-600 hover:underline">Try Exa API</span>
             </div>
             </Link>
           </div>
