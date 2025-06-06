@@ -19,7 +19,7 @@ Company Researcher is a free and open-source tool that helps you instantly under
    - Subpages (About, FAQs, Pricing, Blog) ([Try API](https://dashboard.exa.ai/playground/search?q=exa.ai&c=company&filters=%7B%22type%22%3A%22neural%22%2C%22text%22%3A%22true%22%2C%22numResults%22%3A1%2C%22livecrawl%22%3A%22always%22%2C%22subpages%22%3A10%2C%22subpageTarget%22%3A%5B%22about%22%2C%22pricing%22%2C%22faq%22%2C%22blog%22%5D%2C%22includeDomains%22%3A%5B%22exa.ai%22%5D%7D))
 
 2. **LinkedIn Data**
-   - Company Profile ([Try API](https://dashboard.exa.ai/playground/search?q=https%3A%2F%2Fexa.ai%20Linkedin%20profile%3A&filters=%7B%22type%22%3A%22keyword%22%2C%22text%22%3A%22true%22%2C%22numResults%22%3A1%2C%22livecrawl%22%3A%22always%22%7D))
+   - Company Profile ([Try API](https://dashboard.exa.ai/playground/search?q=exa.ai%20company%20linkedin%20profile%3A&filters=%7B%22text%22%3A%22true%22%2C%22includeDomains%22%3A%5B%22linkedin.com%22%5D%2C%22numResults%22%3A1%7D))
    - Founders' Profiles ([Try API](https://dashboard.exa.ai/playground/search?q=exa.ai%20founder%27s%20Linkedin%20page%3A&filters=%7B%22type%22%3A%22keyword%22%2C%22numResults%22%3A5%2C%22includeDomains%22%3A%5B%22linkedin.com%22%5D%7D))
 
 3. **Financial Information**
