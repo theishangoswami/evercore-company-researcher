@@ -15,12 +15,11 @@ export async function POST(req: NextRequest) {
 
     // Use Exa to search for content related to the claim
     const result = await exa.searchAndContents(
-      `${websiteurl} Linkedin profile:`,
+      `${websiteurl} company Linkedin profile:`,
       {
-        type: "keyword",
         text: true,
         numResults: 1,
-        livecrawl: "always",
+        includeDomains: ["linkedin.com"]
       }
     );
 
