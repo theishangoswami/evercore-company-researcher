@@ -15,12 +15,10 @@ export async function POST(req: NextRequest) {
 
     // Use Exa to search for content related to the claim
     const result = await exa.searchAndContents(
-      `${websiteurl} Latest News:`,
+      `${websiteurl} News`,
       {
-        category: "news",
-        type: "keyword",
-        text: true,
-        livecrawl: "always",
+        type: "auto",
+        livecrawl: "fallback",
         includeText: [websiteurl],
         numResults: 10,
       }

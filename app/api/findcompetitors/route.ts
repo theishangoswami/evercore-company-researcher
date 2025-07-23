@@ -17,13 +17,11 @@ export async function POST(req: NextRequest) {
     const result = await exa.searchAndContents(
       summaryText,
       {
-        type: "neural",
-        useAutoprompt: true,
-        text: true,
+        type: "auto",
         summary: {
             query: `Explain in one/two lines what does this company do in simple english. Don't use any diffcult words.`
           },
-        livecrawl: "always",
+        livecrawl: "fallback",
         excludeDomains: [websiteurl]
       }
     );
